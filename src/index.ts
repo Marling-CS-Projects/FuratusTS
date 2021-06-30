@@ -1,16 +1,9 @@
 import { updateBullets } from './Bullets'
 import { Avatar } from './Avatar'
 import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js';
+import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { fire } from './Bullets';
 import { topWall, leftWall, rightWall, bottomWall } from './lvl1'
-
-//creates constants to be used by matter in the rest of the programme. 
-const Engine = Matter.Engine;
-const Body= Matter.Body;
-const Render = Matter.Render;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
 
 const engine = Engine.create();
 
