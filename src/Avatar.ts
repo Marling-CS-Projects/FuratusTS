@@ -6,4 +6,6 @@ export class Avatar extends GameObject {
         super(pixiData, matterData)
         this.health = health;
     }
+
+    gameloop(){ }
 } 
