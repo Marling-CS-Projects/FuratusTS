@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js'
 import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js'
 import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { fire } from './Bullets';
-import { topWall, leftWall, rightWall, bottomWall } from './lvl1'
+import { Wall } from './Walls'
 
 const engine = Engine.create();
 const loader = PIXI.Loader
@@ -26,9 +26,10 @@ document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60), 10 )
-canvas.stage.addChild(avatar.pixiData) //adds the pixiData of the player to the stage so it is shown.
-World.add(engine.world, [avatar.matterData, bottomWall]) //adds player and wall matterData to the world so that they work with physics.
+let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
 
+World.add(engine.world, [avatar.matterData, bottomWall.matterData]) //adds player and wall matterData to the world so that they work with physics.
+canvas.stage.addChild(avatar.pixiData, bottomWall.pixiData) //adds the pixiData of objects to the stage so it is shown.
 
 //keyboard event handlers
 window.addEventListener("keydown", keysDown);
@@ -48,26 +49,6 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-/*
-let isJumping = false //prevents double jump 
-function jump() {
-    if (isJumping) return
-    let timerUpID = setInterval(function () { //the setInterval method allows me to create a function that runs every certain interval of time
-        if (avatar.y < 450) {
-            clearInterval(timerUpID) // stops permanent jumping 
-            let timerDownID = setInterval(function () {
-                if (avatar.y > 562) {
-                    clearInterval(timerDownID) //stops permanent fall
-                    isJumping = false
-                }
-                avatar.y += 4
-            }, 20)
-        }
-        isJumping = true
-        avatar.y -= 10 //gradually decreases the height following a jump
-    }, 20)
-}
-*/
 
 let lastBulletTime:number = null;
 function gameLoop(delta:number) {
@@ -97,11 +78,11 @@ function gameLoop(delta:number) {
 
     //Left arrow
     if (keys["37"]) {
-        Body.setVelocity(avatar.matterData, {x:-10, y:0})
+        Body.setVelocity(avatar.matterData, {x:-5, y:0})
     }
     //Right arrow
     if (keys["39"]) {
-        Body.setVelocity(avatar.matterData, {x:10, y:0})
+        Body.setVelocity(avatar.matterData, {x:5, y:0})
     }
 
     avatar.update(delta)
