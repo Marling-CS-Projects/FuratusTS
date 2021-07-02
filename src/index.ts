@@ -25,11 +25,13 @@ canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60), 10 )
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60), 10 );
 let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
 
-World.add(engine.world, [avatar.matterData, bottomWall.matterData]) //adds player and wall matterData to the world so that they work with physics.
-canvas.stage.addChild(avatar.pixiData, bottomWall.pixiData) //adds the pixiData of objects to the stage so it is shown.
+//adds player and wall matterData to the world so that they work with physics.
+World.add(engine.world, [avatar.matterData, bottomWall.matterData]) 
+//adds the pixiData of objects to the stage so it is shown.
+canvas.stage.addChild(avatar.pixiData, bottomWall.pixiData) 
 
 //keyboard event handlers
 window.addEventListener("keydown", keysDown);
