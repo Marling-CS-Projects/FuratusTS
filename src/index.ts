@@ -7,7 +7,7 @@ import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { fire } from './Bullets';
 import { Wall } from './Walls'
 
-const engine = Engine.create();
+export const engine = Engine.create();
 const loader = PIXI.Loader
 
 //draws a new stage
@@ -25,8 +25,8 @@ canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60), 10 );
-let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity, timeScale: 2}), 10 );
+let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true,}));
 
 //adds player and wall matterData to the world so that they work with physics.
 World.add(engine.world, [avatar.matterData, bottomWall.matterData]) 
@@ -53,11 +53,17 @@ function keysUp(e: any) {
 
 
 let lastBulletTime:number = null;
+let lastJumpTime:number = null;
 function gameLoop(delta:number) {
     updateBullets();
     //Z makes the player go up the screen by giving the avatar an upwards velocity.
     if (keys["90"]) {
-        Body.setVelocity(avatar.matterData, {x:0, y:-10})
+        let now = Date.now();
+
+        if ((now - lastBulletTime) > 300) {
+            Body.setVelocity(avatar.matterData, {x:0, y:-5})
+            lastBulletTime = now;
+        }
     }
     //X          
     if (keys["67"]) {

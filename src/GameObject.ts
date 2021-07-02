@@ -8,15 +8,13 @@ export abstract class GameObject { //exporting allows other files in the project
         this.pixiData = pixiData;
         this.matterData = matterData;
 
-        this.pixiData.anchor.set(0.5)
+        //matter and pixi's position data are relative to different points. this makes pixi relative to a center like matter does.
+        this.pixiData.anchor.set(0.5) 
     }
     update(delta: number){//maps pixi position data to matter every time there is a tick over.
         this.pixiData.position.x = this.matterData.position.x; 
         this.pixiData.position.y = this.matterData.position.y; 
         this.pixiData.rotation = this.matterData.angle;
-        if (this.matterData.angle != 90) {
-            this.matterData.angle = 0
-        }
     }
 }
 
