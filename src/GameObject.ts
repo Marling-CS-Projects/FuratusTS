@@ -7,12 +7,16 @@ export abstract class GameObject { //exporting allows other files in the project
     constructor(pixiData:any, matterData:any ) {
         this.pixiData = pixiData;
         this.matterData = matterData;
+
+        this.pixiData.anchor.set(0.5)
     }
-    gameloop(delta: number): void {} //delta is a set pixi value used to measure change in frames.
     update(delta: number){//maps pixi position data to matter every time there is a tick over.
         this.pixiData.position.x = this.matterData.position.x; 
         this.pixiData.position.y = this.matterData.position.y; 
         this.pixiData.rotation = this.matterData.angle;
+        if (this.matterData.angle != 90) {
+            this.matterData.angle = 0
+        }
     }
 }
 

@@ -5,7 +5,9 @@ export class Avatar extends GameObject {
     constructor(pixiData: any, matterData: any, health:number) {
         super(pixiData, matterData)
         this.health = health;
-    }
 
-    gameloop(){ }
+        if (this.matterData.angle != 90) {
+            this.matterData.angle = 0
+        }
+    }
 } 

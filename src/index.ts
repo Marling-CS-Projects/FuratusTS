@@ -88,5 +88,6 @@ function gameLoop(delta:number) {
     }
 
     avatar.update(delta)
+    bottomWall.update(delta)
     Engine.update(engine, delta*10)
 }
