@@ -1,4 +1,4 @@
-import { GameObject } from './GameObject';
+/*import { GameObject } from './GameObject';
 import {Body, World, Bodies, Render} from 'matter-js';import * as PIXI from 'pixi.js'
 import { avatar,canvas, engine } from './index'
 
@@ -19,7 +19,7 @@ export function fire(left: boolean) {
 }
 
 function createBullet(left:boolean) { // is responsible for creating the bullets
-    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.matterData.position.x, avatar.matterData.position.y , 30, 20, {isStatic:true}), 10)
+    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x, avatar.pixiData.position.y , 30, 20, {isStatic:true}), 10)
     if(left) { // by using a parameter, the program decides whether or not the bullet is travelling left.
         bullet.speed = -bullet.speed;
     }
@@ -35,10 +35,10 @@ export function updateBullets() {
             bullets[i].dead = true;
         }
         if (bullets[i].dead) { //removes bullets that are out of screen.
-            World.remove(engine.world, [bullets[i].matterData]);
             canvas.stage.removeChild(bullets[i].pixiData);
             bullets.splice(i, 1); //removes dead bullets from array
 
         }
     }
 }
+*/
