@@ -63,6 +63,17 @@ class Bullet extends GameObject { //creates a bullet class
         this.pixiData.position.x = this.matterData.position.x; 
         this.pixiData.position.y = this.matterData.position.y; 
         this.pixiData.rotation = this.matterData.angle;
+        for (let i = 0; i < bullets.length; i++) {
+            Body.setVelocity(bullets[i].matterData, {x:-bullets[i].speed, y:0});; //bullets move to the right when x is pressed
+            if (bullets[i].matterData.position.x > 800 || bullets[i].matterData.position.x < 0) { //if bullets have moved too far, then they are dead.
+                bullets[i].dead = true;
+            }
+            if (bullets[i].dead) { //removes bullets that are out of screen.
+                canvas.stage.removeChild(bullets[i].pixiData);
+                bullets.splice(i, 1); //removes dead bullets from array
+    
+            }
+        }
     }
 
 }
@@ -83,24 +94,9 @@ function createBullet(left:boolean) { // is responsible for creating the bullets
 
     return bullet;
 }
-export function updateBullets() {
-
-    for (let i = 0; i < bullets.length; i++) {
-        Body.setVelocity(bullets[i].matterData, {x:-bullets[i].speed, y:0});; //bullets move to the right when x is pressed
-        if (bullets[i].matterData.position.x > 800 || bullets[i].matterData.position.x < 0) { //if bullets have moved too far, then they are dead.
-            bullets[i].dead = true;
-        }
-        if (bullets[i].dead) { //removes bullets that are out of screen.
-            canvas.stage.removeChild(bullets[i].pixiData);
-            bullets.splice(i, 1); //removes dead bullets from array
-
-        }
-    }
-}
 
 let lastBulletTime:number = null;
 function gameLoop(delta:number) {
-    updateBullets();
     //Z makes the player go up the screen by giving the avatar an upwards velocity.
     if (keys["90"]) {
         let now = Date.now();
@@ -140,6 +136,7 @@ function gameLoop(delta:number) {
 
     
     avatar.update(delta)
+    Bullet.update(delta)
     bottomWall.update(delta)
     Engine.update(engine, delta*10)
 }
