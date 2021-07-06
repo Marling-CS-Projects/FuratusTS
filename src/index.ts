@@ -26,7 +26,7 @@ document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity}), 10 );
-let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true,}));
+let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
 
 //adds player and wall matterData to the world so that they work with physics.
 World.add(engine.world, [avatar.matterData, bottomWall.matterData]) 
@@ -89,14 +89,14 @@ function fire(left: boolean) {
 
 function createBullet(left:boolean) { // is responsible for creating the bullets
     if(left) { // by using a parameter, the program decides whether or not the bullet is travelling left.
-        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x-10, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x+35, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
         bullet.speed = -bullet.speed;
         World.add(engine.world,[bullet.matterData]);
         canvas.stage.addChild(bullet.pixiData); 
 
         return bullet;
     } else {
-        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x+10, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x-35, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
         bullet.speed = bullet.speed;
         World.add(engine.world,[bullet.matterData]);
         canvas.stage.addChild(bullet.pixiData); 
