@@ -51,18 +51,21 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-let bullets: any = []; //create an empty array to store bullets in
+let bullets: Bullet[] = []; //create an empty array to store bullets in
 
 class Bullet extends GameObject { //creates a bullet class 
     speed: number;
-    constructor (pixiData:any, matterData:any, speed:number) {
+    dead:boolean;
+    constructor (pixiData:any, matterData:any, speed:number, dead:boolean) {
         super(pixiData, matterData)
         this.speed = speed;
+        this.dead = dead;
     }
     update(delta:number) {
         this.pixiData.position.x = this.matterData.position.x; 
         this.pixiData.position.y = this.matterData.position.y; 
         this.pixiData.rotation = this.matterData.angle;
+        this.pixiData.anchor.set(0.5);
         for (let i = 0; i < bullets.length; i++) {
             Body.setVelocity(bullets[i].matterData, {x:-bullets[i].speed, y:0});; //bullets move to the right when x is pressed
             if (bullets[i].matterData.position.x > 800 || bullets[i].matterData.position.x < 0) { //if bullets have moved too far, then they are dead.
@@ -85,16 +88,22 @@ function fire(left: boolean) {
 }
 
 function createBullet(left:boolean) { // is responsible for creating the bullets
-    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x, avatar.pixiData.position.y , 30, 20, {isStatic:true}), 10)
     if(left) { // by using a parameter, the program decides whether or not the bullet is travelling left.
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x-10, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
         bullet.speed = -bullet.speed;
+        World.add(engine.world,[bullet.matterData]);
+        canvas.stage.addChild(bullet.pixiData); 
+
+        return bullet;
+    } else {
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x+10, avatar.pixiData.position.y , 30, 20, {isStatic:false}), 10, false);
+        bullet.speed = bullet.speed;
+        World.add(engine.world,[bullet.matterData]);
+        canvas.stage.addChild(bullet.pixiData); 
+
+        return bullet;
     }
-    World.add(engine.world,[bullet.matterData]);
-    canvas.stage.addChild(bullet.pixiData); 
-
-    return bullet;
 }
-
 let lastBulletTime:number = null;
 function gameLoop(delta:number) {
     //Z makes the player go up the screen by giving the avatar an upwards velocity.
@@ -136,7 +145,7 @@ function gameLoop(delta:number) {
 
     
     avatar.update(delta)
-    Bullet.update(delta)
+    bullets.forEach((bullet: Bullet) => bullet.update(delta))
     bottomWall.update(delta)
     Engine.update(engine, delta*10)
 }
