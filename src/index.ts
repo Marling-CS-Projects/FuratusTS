@@ -53,12 +53,20 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-let walls
-function jump() {
-    Matter.Events.on(engine, "collisionStart", function(event){
-
-    })
-}
+//collisions for the player being grounded
+let playerGrounded:boolean;
+let walls, [] = [];
+let test:Matter.Body;
+Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
+    event.pairs
+        .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
+        .forEach(pair => {
+            let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
+            if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
+                playerGrounded = true;
+            }
+        });
+});
 let lastBulletTime:number = null;
 let lastJumpTime:number = null;
 function gameLoop(delta:number) {
