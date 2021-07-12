@@ -7,6 +7,7 @@ import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, 
 import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { Wall } from './Walls'
 import { Bullet, bullets, fire} from './bullets'
+import * as Matter from 'matter-js';
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -27,7 +28,7 @@ document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity}), 10 );
-let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
+export let bottomWall = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
 
 //adds player and wall matterData to the world so that they work with physics.
 World.add(engine.world, [avatar.matterData, bottomWall.matterData]) 
@@ -52,16 +53,18 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-let lastBulletTime:number = null;
-function gameLoop(delta:number) {
-    //Z makes the player go up the screen by giving the avatar an upwards velocity.
-    if (keys["90"]) {
-        let now = Date.now();
+let walls
+function jump() {
+    Matter.Events.on(engine, "collisionStart", function(event){
 
-        if ((now - lastBulletTime) > 300) {
-            Body.setVelocity(avatar.matterData, {x:0, y:-5})
-            lastBulletTime = now;
-        }
+    })
+}
+let lastBulletTime:number = null;
+let lastJumpTime:number = null;
+function gameLoop(delta:number) {
+    //Z makes the player 'jump' by giving the avatar an upwards velocity.
+    if (keys["90"]) {
+        Body.setVelocity(avatar.matterData, {x:0, y:-5})
     }
     //C         
     if (keys["88"]) {
