@@ -55,24 +55,40 @@ function keysUp(e: any) {
 
 //collisions for the player being grounded
 let playerGrounded:boolean;
-let walls, [] = [];
+
 let test:Matter.Body;
-Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
-    event.pairs
-        .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
-        .forEach(pair => {
-            let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
-            if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
-                playerGrounded = true;
-            }
-        });
-});
+function jump() {
+    Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
+        event.pairs
+            .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
+            .forEach(pair => {
+                let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
+                if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
+                    playerGrounded = true;
+                }
+            })
+    })
+    Matter.Events.on(engine, "collisionEnd", function (event) { //when Matter detects a collison start
+        event.pairs
+            .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
+            .forEach(pair => {
+                let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
+                if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
+                    playerGrounded = false;
+                }
+            })
+    })
+    if  (playerGrounded = true) {
+        Body.setVelocity(avatar.matterData, {x:0, y: -5})
+    }
+}
+
 let lastBulletTime:number = null;
 let lastJumpTime:number = null;
 function gameLoop(delta:number) {
     //Z makes the player 'jump' by giving the avatar an upwards velocity.
     if (keys["90"]) {
-        Body.setVelocity(avatar.matterData, {x:0, y:-5})
+        jump();
     }
     //C         
     if (keys["88"]) {
