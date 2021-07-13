@@ -5,7 +5,8 @@ import { Avatar } from './Avatar'
 import * as PIXI from 'pixi.js'
 import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js'
 import {Engine, Body, World, Bodies, Render} from 'matter-js';
-import { Wall } from './Walls'
+import { Wall, Platform} from './Walls'
+import { platform, platform1 } from './lvl1'
 import { Bullet, bullets, fire} from './bullets'
 import * as Matter from 'matter-js';
 
@@ -15,7 +16,7 @@ const loader = PIXI.Loader
 //draws a new stage
 export let canvas = new Application (
     {
-        width: 800,
+        width: 1425,
         height: 600,
         backgroundColor: 0x808080 //grey
     }
@@ -28,10 +29,8 @@ document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity}), 10 );
-let platform = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
-let platform1 = new Wall(PIXI.Sprite.from("assets/wallhor.png"), Bodies.rectangle(550,240,720, 20, {isStatic:true}));
 
-let platforms: Wall[] = [];
+let platforms: Platform[] = [];
 platforms.push(platform, platform1)
 
 //adds player and wall matterData to the world so that they work with physics.
@@ -57,7 +56,7 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-let playerGrounded: boolean = false;//collisions for the player being grounded
+let playerGrounded: boolean = true;//collisions for the player being grounded
 function jump() {
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
     event.pairs

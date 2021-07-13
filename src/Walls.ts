@@ -10,6 +10,11 @@ export class Wall extends GameObject {
     constructor(pixiData:any, matterData:any) {
     super(pixiData, matterData)
     }
+}
 
+export class Platform extends GameObject {
+    constructor(pixiData:any, matterData:any) {
+    super(pixiData, matterData)
+    }
 }
 
