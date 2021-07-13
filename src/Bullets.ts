@@ -20,7 +20,7 @@ export class Bullet extends GameObject { //creates a bullet class
         this.pixiData.anchor.set(0.5);
         for (let i = 0; i < bullets.length; i++) {
             Body.setVelocity(bullets[i].matterData, {x:-bullets[i].speed, y:0});; //bullets move to the right when x is pressed
-            if (bullets[i].matterData.position.x > 800 || bullets[i].matterData.position.x < 0) { //if bullets have moved too far, then they are dead.
+            if (bullets[i].matterData.position.x > 3000 || bullets[i].matterData.position.x < 0) { //if bullets have moved too far, then they are dead.
                 bullets[i].dead = true;
             }
             if (bullets[i].dead) { //removes bullets that are out of screen.

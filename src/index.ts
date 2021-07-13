@@ -6,7 +6,7 @@ import * as PIXI from 'pixi.js'
 import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js'
 import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { Wall, Platform} from './Walls'
-import { platform, platform1 } from './lvl1'
+import { platform, platform1, platform2 } from './lvl1'
 import { Bullet, bullets, fire} from './bullets'
 import * as Matter from 'matter-js';
 
@@ -31,12 +31,12 @@ document.body.appendChild(canvas.view);
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity}), 10 );
 
 let platforms: Platform[] = [];
-platforms.push(platform, platform1)
+platforms.push(platform, platform1, platform2)
 
 //adds player and wall matterData to the world so that they work with physics.
-World.add(engine.world, [avatar.matterData, platform.matterData, platform1.matterData]) 
+World.add(engine.world, [avatar.matterData, platform.matterData, platform1.matterData, platform2.matterData]) 
 //adds the pixiData of objects to the stage so it is shown.
-canvas.stage.addChild(avatar.pixiData, platform.pixiData, platform1.pixiData) 
+canvas.stage.addChild(avatar.pixiData, platform.pixiData, platform1.pixiData, platform2.pixiData) 
 
 //keyboard event handlers
 window.addEventListener("keydown", keysDown);
@@ -126,5 +126,6 @@ function gameLoop(delta:number) {
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
     platform.update(delta)
     platform1.update(delta)
+    platform2.update(delta)
     Engine.update(engine, delta*10)
 }
