@@ -53,33 +53,23 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-//collisions for the player being grounded
-let playerGrounded:boolean;
-
-let test:Matter.Body;
 function jump() {
+//collisions for the player being grounded
+    let playerGrounded:boolean = false;
     Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
         event.pairs
             .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
-            .forEach(pair => {
+            .forEach(pair => { 
                 let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
-                if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
+                if (possibleGrounding === bottomWall.matterData) { //if they are colliding, then the player is on the ground.
                     playerGrounded = true;
-                }
-            })
-    })
-    Matter.Events.on(engine, "collisionEnd", function (event) { //when Matter detects a collison start
-        event.pairs
-            .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
-            .forEach(pair => {
-                let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
-                if (possibleGrounding == bottomWall.matterData) { //if they are colliding, then the player is on the ground.
+                } else { 
                     playerGrounded = false;
                 }
             })
     })
     if  (playerGrounded = true) {
-        Body.setVelocity(avatar.matterData, {x:0, y: -5})
+        Body.setVelocity(avatar.matterData, {x: avatar.matterData.velocity.x, y: -5})
     }
 }
 
@@ -111,11 +101,11 @@ function gameLoop(delta:number) {
 
     //Left arrow
     if (keys["37"]) {
-        Body.setVelocity(avatar.matterData, {x:-5, y:0})
+        Body.setVelocity(avatar.matterData, {x:-5, y:avatar.matterData.velocity.y})
     }
     //Right arrow
     if (keys["39"]) {
-        Body.setVelocity(avatar.matterData, {x:5, y:0})
+        Body.setVelocity(avatar.matterData, {x:5, y:avatar.matterData.velocity.y})
     }
 
     
