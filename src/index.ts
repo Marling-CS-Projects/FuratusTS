@@ -6,7 +6,7 @@ import * as PIXI from 'pixi.js'
 import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js'
 import {Engine, Body, World, Bodies, Render} from 'matter-js';
 import { Wall, Platform} from './Walls'
-import { platform, platform1, platform2 } from './lvl1'
+import { platform, platform1, platform2 } from './levels/lvl1'
 import { Bullet, bullets, fire} from './bullets'
 import * as Matter from 'matter-js';
 
@@ -28,7 +28,7 @@ canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(770,30, 60, 60, {inertia:Infinity}), 10 );
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(400,300, 60, 60, {inertia:Infinity, timeScale:2}), 10 );
 
 let platforms: Platform[] = [];
 platforms.push(platform, platform1, platform2)
@@ -56,6 +56,9 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
+let collisionActive = null;
+
+
 let playerGrounded: boolean = true;//collisions for the player being grounded
 function jump() {
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
@@ -64,26 +67,27 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
         .forEach(pair => {
             let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
             for (let i = 0; i < platforms.length; i++) {
-                if (possibleGrounding == platforms[i].matterData) { //if they are colliding, then the player is on the ground.
+                if (possibleGrounding == platforms[i].matterData ) { //if they are colliding, then the player is on the ground.
                     playerGrounded = true;
                 }
             }
         })
 })
-Matter.Events.on(engine, "collisionEnd", function (event) { //when Matter detects a collison start
+//checks in the same way as the statement 
+Matter.Events.on(engine, "collisionEnd", function (event) { 
     event.pairs
-        .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
+        .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) 
         .forEach(pair => {
-            let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
+            let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; 
             for (let i = 0; i < platforms.length; i++) {
-                if (possibleGrounding == platforms[i].matterData) { //if they are colliding, then the player is on the ground.
+                if (possibleGrounding == platforms[i].matterData ) {
                     playerGrounded = false;
                 }
             }    
         })
 })
 if  (playerGrounded === true) {
-    Body.setVelocity(avatar.matterData, {x:avatar.matterData.velocity.x, y: -6})
+    Body.setVelocity(avatar.matterData, {x:avatar.matterData.velocity.x, y: -12})
 }
 }
 
