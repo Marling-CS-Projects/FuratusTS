@@ -14,7 +14,7 @@ export const engine = Engine.create();
 const loader = PIXI.Loader
 
 //draws a new stage
-export let canvas = new Application (
+export let canvas = new PIXI.Application (
     {
         width: 1425,
         height: 600,
