@@ -22,13 +22,15 @@ export let canvas = new PIXI.Application (
     }
 );
 
+//creates an avatar for the player that has both matter and pixi properties and health.
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300,300, 60, 60, {inertia:Infinity, timeScale:2}), 10 );
+
 // Add the canvas to the document
 canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
-//creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(400,300, 60, 60, {inertia:Infinity, timeScale:2}), 10 );
+
 
 let platforms: Platform[] = [];
 platforms.push(platform, platform1, platform2)
@@ -93,6 +95,7 @@ if  (playerGrounded === true) {
 
 let lastBulletTime:number = null;
 function gameLoop(delta:number) {
+    canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2;
     //Z makes the player 'jump' by giving the avatar an upwards velocity.
     if (keys["90"]) {
         jump();
