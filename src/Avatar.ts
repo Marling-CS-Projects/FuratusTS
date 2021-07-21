@@ -9,16 +9,17 @@ export class Avatar extends GameObject {
         this.health = health;
         this.dead = dead;
     }
-
-    checkDead() {
-        if(this.health === 0) {
+    
+    update(delta:number) {
+        this.pixiData.position.x = this.matterData.position.x; 
+        this.pixiData.position.y = this.matterData.position.y; 
+        this.pixiData.rotation = this.matterData.angle;
+        
+        if(this.health == 0) {
             this.dead = true;
-        }
-    }
-
-    replaceSprite() {
-        if (this.dead = true) {
-            this.pixiData = PIXI.Sprite.from("./assets/avdead.png");
+        } else {
+            this.dead = false; //obsolete normally, but currently being used for testing purposes.
         }
     }
 } 
+

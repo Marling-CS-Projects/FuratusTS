@@ -10,4 +10,4 @@ let platform2= new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectan
 export let platforms1: Platform[] = [];
 platforms1.push(platform,platform1,platform2)
 
-export let spike = new Spike(PIXI.Sprite.from("assets/singlespike.png"), Bodies.rectangle(1107, 360, 13, 13), 10)
+export let spike = new Spike(PIXI.Sprite.from("assets/singlespike.png"), Bodies.rectangle(1027, 325, 13, 13, {isStatic: true}));

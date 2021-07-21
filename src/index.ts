@@ -2,7 +2,7 @@
 import { Avatar } from './Avatar'
 import * as PIXI from 'pixi.js'
 import { Wall, Platform} from './Walls'
-import { platforms1 } from './levels/lvl1'
+import { platforms1, spike } from './levels/lvl1'
 import { Bullet, bullets, fire} from './bullets'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -13,14 +13,14 @@ const loader = PIXI.Loader
 //draws a new stage
 export let canvas = new PIXI.Application (
     {
-        width: 1420,
+        width: 1425,
         height: 600,
         backgroundColor: 0x000000 //blue
     }
 );
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300,300, 60, 60, {inertia:Infinity, timeScale:2}), 10, false);
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300,300, 60, 60, {inertia:Infinity, timeScale:2}), 10, true);
 
 canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
@@ -28,12 +28,12 @@ document.body.appendChild(canvas.view);
 
 
 //adds player and level matterData to the world so that they work with physics.
-World.add(engine.world, [avatar.matterData]);
+World.add(engine.world, [avatar.matterData, spike.matterData]);
 for (let i = 0; i < platforms1.length; i++) {
     World.add(engine.world, [platforms1[i].matterData])
 }
 //adds the pixiData of objects to the stage so they are shown.
-canvas.stage.addChild(avatar.pixiData);
+canvas.stage.addChild(avatar.pixiData, spike.pixiData);
 for (let i = 0; i < platforms1.length; i++) {
     canvas.stage.addChild(platforms1[i].pixiData)
 } 
@@ -116,9 +116,10 @@ function gameLoop(delta:number) {
     }
 
     //R (currently not working)
-    if (keys["114"] && avatar.dead === false) {
-        avatar.matterData.position.x = 300;
-        avatar.matterData.position.y = 300;
+    if (keys["82"] ) {
+        Body.setPosition(avatar.matterData, {x: 300, y: 300})
+        avatar.dead = false;
+        avatar.health = 10;
     }
 
     //Left arrow
@@ -129,9 +130,9 @@ function gameLoop(delta:number) {
     if (keys["39"] && avatar.dead === false) {
         Body.setVelocity(avatar.matterData, {x:5, y:avatar.matterData.velocity.y})
     }
-
     
     avatar.update(delta)
+    spike.update(delta)
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
     for (let i = 0; i < platforms1.length; i++) {
         platforms1[i].update(delta)
