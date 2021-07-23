@@ -2,7 +2,7 @@
 import { Avatar } from './Avatar'
 import * as PIXI from 'pixi.js'
 import { Wall, Platform } from './Walls'
-import { platforms1, spike } from './levels/lvl1'
+import { platforms1, spikes1} from './levels/lvl1'
 import { Bullet, bullets, fire } from './bullets'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -36,14 +36,20 @@ document.body.appendChild(canvas.view);
 
 
 //adds player and level matterData to the engine so that they work with physics.
-World.add(engine.world, [avatar.matterData, spike.matterData]);
+World.add(engine.world, [avatar.matterData,]);
 for (let i = 0; i < platforms1.length; i++) { //adds every platform to the engine
     World.add(engine.world, [platforms1[i].matterData])
 }
+for (let i = 0; i < spikes1.length; i++) {
+    World.add(engine.world, [spikes1[i].matterData])
+}
 //adds the pixiData of objects to the stage so they are shown.
-canvas.stage.addChild(avatar.pixiData, spike.pixiData, avdead, deadmsg);
+canvas.stage.addChild(avatar.pixiData, avdead, deadmsg);
 for (let i = 0; i < platforms1.length; i++) { //adds every platform to the stage
     canvas.stage.addChild(platforms1[i].pixiData)
+}
+for (let i = 0; i < spikes1.length; i++) {
+    canvas.stage.addChild(spikes1[i].pixiData)
 }
 
 //keyboard event handlers
@@ -77,8 +83,10 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                 }
             }
             //for spike collisions
-            if (collidingWith == spike.matterData) {
-                avatar.health = 0;
+            for (let i = 0; i < spikes1.length; i++) {
+                if (collidingWith == spikes1[i].matterData) {
+                    avatar.health = 0;
+                }
             }
         })
 })
@@ -129,7 +137,7 @@ function gameLoop(delta: number) {
         avatarGrounded = true
         avdead.x = 0
         deadmsg.x = 0
-        avdead.y= 1200
+        avdead.y = 1200
         deadmsg.y = 1200 //resets avdead Sprite so it can't be seen
     }
 
@@ -143,10 +151,12 @@ function gameLoop(delta: number) {
     }
 
     avatar.update(delta)
-    spike.update(delta)
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
     for (let i = 0; i < platforms1.length; i++) {
         platforms1[i].update(delta)
+    }
+    for (let i = 0; i < spikes1.length; i++) {
+        spikes1[i].update(delta)
     }
     Engine.update(engine, delta * 10)
 }
