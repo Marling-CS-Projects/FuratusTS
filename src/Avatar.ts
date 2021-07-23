@@ -1,5 +1,7 @@
 import { GameObject } from './GameObject'
+import { avatar, avdead ,canvas, deadmsg } from './index'
 import * as PIXI from 'pixi.js'
+import { Sprite } from 'pixi.js';
 
 export class Avatar extends GameObject {
     health: number;
@@ -10,18 +12,19 @@ export class Avatar extends GameObject {
         this.dead = dead;
     }
 
-    update(delta: number) {
+    update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
         this.pixiData.position.x = this.matterData.position.x;
         this.pixiData.position.y = this.matterData.position.y;
         this.pixiData.rotation = this.matterData.angle;
 
-        if (this.health == 0) {
-            this.dead = true;
-            console.log("The avatar is dead")
-        } /*else {
-            this.dead = false;
-            console.log("And he's back") //obsolete normally, but currently being used for testing purposes.
-        }*/
+        if (this.health == 0) { //checks if the avatar is dead.
+            this.dead = true
+            avdead.x = avatar.pixiData.position.x;
+            avdead.y = avatar.pixiData.position.y;
+            deadmsg.x = avatar.pixiData.position.x;
+            deadmsg.y = avatar.pixiData.position.y + 50
+
+        } 
     }
 }
 
