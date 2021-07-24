@@ -3,9 +3,10 @@ import { Avatar } from './Avatar'
 import * as PIXI from 'pixi.js'
 import { Wall, Platform } from './Walls'
 import { platforms1, spikes1} from './levels/lvl1'
-import { Bullet, bullets, fire } from './bullets'
+import { Bullet, bullets, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
+import { GameObject } from './GameObject'
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -90,6 +91,23 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             }
         })
 })
+export let beingShot: any;
+Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
+    for (let i = 0; i > bullets.length; i++) {
+        event.pairs
+            .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
+            .forEach(pair => {
+                if (pair.bodyA === bullets[i].matterData) {
+                    beingShot.matterData = pair.bodyB
+                    bullets[i].damage;
+                } else if (pair.bodyB === bullets[i].matterData) {
+                    beingShot.matterData = pair.bodyA
+                    bullets[i].damage();
+                }
+            })
+
+    }
+})
 Matter.Events.on(engine, "collisionEnd", function (event) {
     event.pairs
         .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData)
@@ -138,7 +156,10 @@ function gameLoop(delta: number) {
         avdead.x = 0
         deadmsg.x = 0
         avdead.y = 1200
-        deadmsg.y = 1200 //resets avdead Sprite so it can't be seen
+        deadmsg.y = 1200 //resets death sprites so they can't be seen.
+        for ( let i= 0; i < bullets.length; i++ ) { //removes all dead bullets remaining on the stage.
+            bullets[i].dead = true;
+        }
     }
 
     //Left arrow
