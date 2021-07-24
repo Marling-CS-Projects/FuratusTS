@@ -5,8 +5,7 @@ import * as PIXI from 'pixi.js'
 import { canvas, engine, avatar, beingShot } from './index'
 
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
-
-
+ 
 export class Bullet extends GameObject { //creates a bullet class 
     speed: number;
     dead: boolean;
@@ -26,7 +25,7 @@ export class Bullet extends GameObject { //creates a bullet class
                 bullets[i].dead = true;
             }
             if (bullets[i].dead) { //removes bullets that are out of screen.
-                World.remove(engine.world, [bullets[i].matterData])
+                World.remove(engine.world, [bullets[i].matterData]) //???
                 canvas.stage.removeChild(bullets[i].pixiData);
                 bullets.splice(i, 1); //removes dead bullets from array
 
