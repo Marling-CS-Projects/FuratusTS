@@ -3,13 +3,23 @@ import { avatar, avdead ,canvas, deadmsg } from './index'
 import * as PIXI from 'pixi.js'
 import { Sprite } from 'pixi.js';
 
-export class Avatar extends GameObject {
+
+export abstract class Entity extends GameObject { //for all 'living' objects in the game.
     health: number;
     dead: boolean;
     constructor(pixiData: any, matterData: any, health: number, dead: boolean) {
         super(pixiData, matterData)
         this.health = health;
         this.dead = dead;
+    }
+
+}
+
+export class Avatar extends Entity {
+    health: number;
+    dead: boolean;
+    constructor(pixiData: any, matterData: any, health: number, dead: boolean) {
+        super(pixiData, matterData, health, dead)
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
