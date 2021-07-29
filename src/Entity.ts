@@ -38,3 +38,19 @@ export class Avatar extends Entity {
     }
 }
 
+export class BasicEnemy extends Entity {
+    pixiData: any;
+    matterData: any;
+    dead: any;
+    health: number;
+    constructor(pixiData: any, matterData: any, health: number, dead:boolean) {
+        super( pixiData, matterData, health, dead)
+        this.pixiData = PIXI.Sprite.from("/assets/enemy.jpg");
+        this.dead = dead;
+        this.health = 3;
+    }
+
+    findAvatar() {
+        //dijkstra's to find avatar
+    }
+}

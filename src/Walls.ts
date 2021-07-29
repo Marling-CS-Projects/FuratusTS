@@ -18,3 +18,4 @@ export class Platform extends GameObject {
     }
 }
 
+

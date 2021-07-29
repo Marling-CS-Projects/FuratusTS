@@ -1,12 +1,13 @@
 //import { updateBullets, fire } from './Bullets'
 import { Entity, Avatar } from './Entity'
 import * as PIXI from 'pixi.js'
-import { Wall, Platform } from './Walls'
+import { Platform } from './Walls'
 import { platforms1, spikes1 } from './levels/lvl1'
 import { Bullet, bullets, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
-import { GameObject } from './GameObject'
+import { GameObject, } from './GameObject'
+import { gameObjectManager } from './gameObjectManager'
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -98,18 +99,19 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
             .forEach(pair => {
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
-                if (beingShot instanceof Entity) {
-                    beingShot.health -= 1;
-                    bullets[i].dead = true;
-                    console.log("shot")
-                } else if (beingShot! instanceof Entity) {
-                    bullets[i].dead = true;
-                    console.log("shot")
+                for (let i = 0; i > gameObjectManager.length; i++) {
+                    if (beingShot == gameObjectManager[i].matterData && beingShot instanceof Entity) {
+                        beingShot.health -= 1;
+                        bullets[i].dead = true;
+                        console.log("shot")
+                    } else if (beingShot == gameObjectManager[i].matterData && beingShot! instanceof Entity) {
+                        bullets[i].dead = true;
+                        console.log("shot")
+                    }
                 }
-
             })
     }
- })
+})
 
 Matter.Events.on(engine, "collisionEnd", function (event) {
     event.pairs
