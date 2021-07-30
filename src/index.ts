@@ -1,13 +1,11 @@
 //import { updateBullets, fire } from './Bullets'
 import { Entity, Avatar } from './Entity'
 import * as PIXI from 'pixi.js'
-import { Platform } from './Walls'
 import { platforms1, spikes1 } from './levels/lvl1'
-import { Bullet, bullets, fire } from './Bullet'
+import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
-import { GameObject, } from './GameObject'
-import { gameObjectManager } from './gameObjectManager'
+import { GameObject } from './GameObject';
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -20,6 +18,8 @@ export let canvas = new PIXI.Application(
         backgroundColor: 0x000000 //blue
     }
 );
+
+export let bullets: Bullet[] = []; //create an empty array to store bullets in
 
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false);
@@ -94,20 +94,24 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
 })
 
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
-    for (let i = 0; i > bullets.length; i++) {
+    console.log("collision starting");
+    for (let i = 0; i < bullets.length; i++) {
+        console.log("filtering")
         event.pairs
             .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
             .forEach(pair => {
+                console.log("pair stage")
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
-                for (let i = 0; i > gameObjectManager.length; i++) {
-                    if (beingShot == gameObjectManager[i].matterData && beingShot instanceof Entity) {
-                        beingShot.health -= 1;
+                for (let j = 0; j < gameObjectManager.length; j++) {
+                    console.log("Checking against gameObjectManager")
+                    if (beingShot == gameObjectManager[j].matterData) {
+                        console.log("shot " + beingShot)
                         bullets[i].dead = true;
-                        console.log("shot")
-                    } else if (beingShot == gameObjectManager[i].matterData && beingShot! instanceof Entity) {
-                        bullets[i].dead = true;
-                        console.log("shot")
-                    }
+                        if (beingShot instanceof Entity) {
+                            console.log("Shot an entity")
+                            beingShot.health -=1
+                        }
+                    } 
                 }
             })
     }
@@ -128,6 +132,14 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
 
 let lastBulletTime: number = null;
 function gameLoop(delta: number) {
+    for (let i = 0; i < bullets.length; i++) {
+        if (bullets[i].dead) { //removes bullets that are out of screen.
+            World.remove(engine.world, bullets[i].matterData)
+            canvas.stage.removeChild(bullets[i].pixiData);
+            bullets.splice(i, 1); //removes dead bullets from array
+
+        }
+    }
     canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2; //centres the camera on the avatar.
     //Z makes the player 'jump' by giving the avatar an upwards velocity.
     if (keys["90"] && avatar.dead === false && avatarGrounded === true) {
@@ -186,4 +198,8 @@ function gameLoop(delta: number) {
     }
     Engine.update(engine, delta * 10)
 }
+
+//array of all gameObjects. stored seperately to stop circular dependency error.
+export const gameObjectManager: GameObject[] = [];
+gameObjectManager.push(avatar, ...platforms1, ...spikes1)
 
