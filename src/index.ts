@@ -6,6 +6,8 @@ import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
+import { Platform } from './Walls';
+import { Spike } from './Obstacles';
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -100,12 +102,12 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
         event.pairs
             .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
             .forEach(pair => {
-                console.log("pair stage")
+                console.log("pairs")
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
                 for (let j = 0; j < gameObjectManager.length; j++) {
-                    console.log("Checking against gameObjectManager")
+                    console.log("Checking gameObjectManager")
                     if (beingShot == gameObjectManager[j].matterData) {
-                        console.log("shot " + beingShot)
+                        console.log("shot something")
                         bullets[i].dead = true;
                         if (beingShot instanceof Entity) {
                             console.log("Shot an entity")

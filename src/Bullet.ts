@@ -37,14 +37,14 @@ export function fire(left: boolean) {
 
 export function createBullet(left: boolean) { // is responsible for creating the bullets
     if (left) { // by using a parameter, the program decides whether or not the bullet is travelling left.
-        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x + 35, avatar.pixiData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), 10, false);
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x + 36, avatar.pixiData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), 10, false);
         bullet.speed = -bullet.speed;
         World.add(engine.world, [bullet.matterData]);
         canvas.stage.addChild(bullet.pixiData);
 
         return bullet;
     } else {
-        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x - 35, avatar.pixiData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), 10, false);
+        let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(avatar.pixiData.position.x - 36, avatar.pixiData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), 10, false);
         bullet.speed = bullet.speed;
         World.add(engine.world, [bullet.matterData]);
         canvas.stage.addChild(bullet.pixiData);
