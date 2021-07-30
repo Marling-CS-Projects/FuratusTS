@@ -3,6 +3,7 @@ import * as Matter from "matter-js";
 import { Body, Bodies, World, Engine } from 'matter-js'
 import * as PIXI from 'pixi.js'
 import { canvas, engine, avatar, bullets } from './index'
+import { Entity } from "./Entity";
 
 
  
@@ -25,6 +26,9 @@ export class Bullet extends GameObject { //creates a bullet class
                 bullets[i].dead = true;
             }
         }
+    }
+    damage(beingShot: Entity) {
+        beingShot.health -= 1
     }
 
 }

@@ -1,13 +1,11 @@
 //import { updateBullets, fire } from './Bullets'
-import { Entity, Avatar } from './Entity'
+import { Entity, Avatar, BasicEnemy } from './Entity'
 import * as PIXI from 'pixi.js'
 import { platforms1, spikes1 } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
-import { Platform } from './Walls';
-import { Spike } from './Obstacles';
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -17,14 +15,19 @@ export let canvas = new PIXI.Application(
     {
         width: 1425,
         height: 600,
-        backgroundColor: 0x000000 //blue
+        backgroundColor: 0x808080 //grey
     }
 );
 
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
+export let basicEnemies: BasicEnemy[] = [];
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false);
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false, true, 300, 300);
+
+let enemy1 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+basicEnemies.push(enemy1)
+
 //creates the alternative pixiData for a dead avatar outside of the player's view
 export let avdead = PIXI.Sprite.from("assets/avdead.png");
 export let deadmsg = PIXI.Sprite.from("assets/youdied.png")
@@ -40,7 +43,7 @@ document.body.appendChild(canvas.view);
 
 
 //adds player and level matterData to the engine so that they work with physics.
-World.add(engine.world, [avatar.matterData,]);
+World.add(engine.world, [avatar.matterData, enemy1.matterData]);
 for (let i = 0; i < platforms1.length; i++) { //adds every platform to the engine
     World.add(engine.world, [platforms1[i].matterData])
 }
@@ -48,7 +51,7 @@ for (let i = 0; i < spikes1.length; i++) {
     World.add(engine.world, [spikes1[i].matterData])
 }
 //adds the pixiData of objects to the stage so they are shown.
-canvas.stage.addChild(avatar.pixiData, avdead, deadmsg);
+canvas.stage.addChild(avatar.pixiData, enemy1.pixiData, avdead, deadmsg);
 for (let i = 0; i < platforms1.length; i++) { //adds every platform to the stage
     canvas.stage.addChild(platforms1[i].pixiData)
 }
@@ -74,7 +77,6 @@ function keysUp(e: any) {
 }
 
 //collision detection
-let avatarGrounded: boolean = true;
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
     event.pairs
         .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
@@ -83,7 +85,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             //for ground collisions
             for (let i = 0; i < platforms1.length; i++) {
                 if (collidingWith == platforms1[i].matterData) { //if they are colliding, then the player is on the ground.
-                    avatarGrounded = true;
+                    avatar.grounded = true;
                 }
             }
             //for spike collisions
@@ -92,28 +94,40 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                     avatar.health = 0;
                 }
             }
+            for (let i = 0; i < basicEnemies.length; i++) { //only kills enemy if avatar jumps from above
+                if (collidingWith == basicEnemies[i].matterData) {
+                    avatar.grounded = true;
+                    if (avatar.matterData.position.y < basicEnemies[i].matterData.position.y) {
+                        basicEnemies[i].health = 0;
+                    } else {
+                        avatar.health -= 1;
+                        console.log(avatar.health)
+                    }    
+                }
+            }
         })
 })
 
+//detection for when bullets hit something
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
-    console.log("collision starting");
     for (let i = 0; i < bullets.length; i++) {
-        console.log("filtering")
         event.pairs
             .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
             .forEach(pair => {
-                console.log("pairs")
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
                 for (let j = 0; j < gameObjectManager.length; j++) {
-                    console.log("Checking gameObjectManager")
                     if (beingShot == gameObjectManager[j].matterData) {
-                        console.log("shot something")
-                        bullets[i].dead = true;
-                        if (beingShot instanceof Entity) {
-                            console.log("Shot an entity")
-                            beingShot.health -=1
+                        if (beingShot instanceof Entity) { //this should check if it is an entity first
+                            console.log("Shot a gameObject")
+                            beingShot.health -= 1
+                            console.log(beingShot.health)
+                            bullets[i].dead = true;
+                        } else { //then, if beingShot is not an entity
+                            console.log("shot something")
+                            bullets[i].dead = true;
+                            console.log(enemy1.health)
                         }
-                    } 
+                    }
                 }
             })
     }
@@ -126,7 +140,7 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
             let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA;
             for (let i = 0; i < platforms1.length; i++) {
                 if (possibleGrounding == platforms1[i].matterData) {
-                    avatarGrounded = false; //when the collision ends, the player is no longer grounded
+                    avatar.grounded = false; //when the collision ends, the player is no longer grounded
                 }
             }
         })
@@ -144,7 +158,7 @@ function gameLoop(delta: number) {
     }
     canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2; //centres the camera on the avatar.
     //Z makes the player 'jump' by giving the avatar an upwards velocity.
-    if (keys["90"] && avatar.dead === false && avatarGrounded === true) {
+    if (keys["90"] && avatar.dead === false && avatar.grounded === true) {
         Body.setVelocity(avatar.matterData, { x: avatar.matterData.velocity.x, y: -12 })
     }
     //C         
@@ -168,14 +182,8 @@ function gameLoop(delta: number) {
 
     //R allows the player to reset the avatar in case of death
     if (keys["82"]) {
-        Body.setPosition(avatar.matterData, { x: 300, y: 300 })
-        avatar.dead = false
-        avatar.health = 10
-        avatarGrounded = true
-        avdead.x = 0
-        deadmsg.x = 0
-        avdead.y = 1200
-        deadmsg.y = 1200 //resets death sprites so they can't be seen.
+        avatar.reset()
+        enemy1.reset()
         for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
             bullets[i].dead = true;
         }
@@ -191,6 +199,7 @@ function gameLoop(delta: number) {
     }
 
     avatar.update(delta)
+    enemy1.update(delta)
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
     for (let i = 0; i < platforms1.length; i++) {
         platforms1[i].update(delta)
@@ -203,5 +212,5 @@ function gameLoop(delta: number) {
 
 //array of all gameObjects. stored seperately to stop circular dependency error.
 export const gameObjectManager: GameObject[] = [];
-gameObjectManager.push(avatar, ...platforms1, ...spikes1)
+gameObjectManager.push(avatar, enemy1, ...platforms1, ...spikes1)
 

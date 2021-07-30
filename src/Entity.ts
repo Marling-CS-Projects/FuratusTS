@@ -1,25 +1,30 @@
 import { GameObject } from './GameObject'
-import { avatar, avdead ,canvas, deadmsg } from './index'
+import { avatar, avdead , deadmsg } from './index'
 import * as PIXI from 'pixi.js'
+import * as Matter from 'matter-js';
+import { Body } from 'matter-js';
 import { Sprite } from 'pixi.js';
 
 
 export abstract class Entity extends GameObject { //for all 'living' objects in the game.
     health: number;
     dead: boolean;
-    constructor(pixiData: any, matterData: any, health: number, dead: boolean) {
+    spawnX: number;
+    spawnY: number;
+    constructor(pixiData: any, matterData: any, health: number, dead: boolean, spawnX:number, spawnY:number) {
         super(pixiData, matterData)
         this.health = health;
         this.dead = dead;
+        this.spawnX = spawnX;
+        this.spawnY = spawnY;
     }
 
 }
 
 export class Avatar extends Entity {
-    health: number;
-    dead: boolean;
-    constructor(pixiData: any, matterData: any, health: number, dead: boolean) {
-        super(pixiData, matterData, health, dead)
+    grounded: boolean;
+    constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX:number, spawnY:number,) {
+        super(pixiData, matterData, health, dead, spawnX, spawnY,)
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
@@ -36,20 +41,40 @@ export class Avatar extends Entity {
 
         } 
     }
+
+    reset() {
+        this.dead = false
+        this.health = 10
+        this.grounded = true
+        avdead.x = 0
+        deadmsg.x = 0
+        avdead.y = 1200
+        deadmsg.y = 1200 //resets death sprites so they can't be seen.
+        Body.setPosition(avatar.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
+    }
 }
 
 export class BasicEnemy extends Entity {
-    pixiData: any;
-    matterData: any;
-    dead: any;
-    health: number;
-    constructor(pixiData: any, matterData: any, health: number, dead:boolean) {
-        super( pixiData, matterData, health, dead)
-        this.pixiData = PIXI.Sprite.from("/assets/enemy.jpg");
-        this.dead = dead;
-        this.health = 3;
+    constructor(pixiData: any, matterData: any, health: number, dead:boolean,spawnX:number, spawnY:number ) {
+        super( pixiData, matterData, health, dead, spawnX, spawnY)
     }
 
+    update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
+        this.pixiData.position.x = this.matterData.position.x;
+        this.pixiData.position.y = this.matterData.position.y;
+        this.pixiData.rotation = this.matterData.angle;
+
+        if (this.health == 0) { //checks if the enemy is dead.
+            this.dead = true
+            this.matterData.position.y = 800;
+        } 
+    }
+
+    reset() {
+        this.health = 3;
+        this.dead = false;
+        Body.setPosition(this.matterData, {x:this.spawnX, y:this.spawnY})
+    }
     findAvatar() {
         //dijkstra's to find avatar
     }
