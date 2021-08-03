@@ -94,12 +94,14 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                     avatar.health = 0;
                 }
             }
+            //for enemy collisions
             for (let i = 0; i < basicEnemies.length; i++) { //only kills enemy if avatar jumps from above
                 if (collidingWith == basicEnemies[i].matterData) {
-                    avatar.grounded = true;
                     if (avatar.matterData.position.y < basicEnemies[i].matterData.position.y) {
+                        avatar.grounded = true;
                         basicEnemies[i].health = 0;
                     } else {
+                        avatar.grounded = true;
                         avatar.health -= 1;
                         console.log(avatar.health)
                     }    
@@ -109,16 +111,16 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
 })
 
 //detection for when bullets hit something
-Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
+Matter.Events.on(engine, "collisionStart", function (event) { 
     for (let i = 0; i < bullets.length; i++) {
         event.pairs
-            .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) //filter with avatar as bodyA or bodyB
+            .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) 
             .forEach(pair => {
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
                 for (let j = 0; j < gameObjectManager.length; j++) {
                     if (beingShot == gameObjectManager[j].matterData) {
                         if (beingShot instanceof Entity) { //this should check if it is an entity first
-                            console.log("Shot a gameObject")
+                            console.log("Shot an Entity")
                             beingShot.health -= 1
                             console.log(beingShot.health)
                             bullets[i].dead = true;
@@ -141,6 +143,13 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
             for (let i = 0; i < platforms1.length; i++) {
                 if (possibleGrounding == platforms1[i].matterData) {
                     avatar.grounded = false; //when the collision ends, the player is no longer grounded
+                }
+            }
+            for (let i = 0; i < basicEnemies.length; i++) { 
+                if (possibleGrounding == basicEnemies[i].matterData) {
+                    if (avatar.matterData.position.y < basicEnemies[i].matterData.position.y) {
+                        avatar.grounded = false;
+                    }
                 }
             }
         })
