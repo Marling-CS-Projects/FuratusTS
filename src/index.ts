@@ -104,31 +104,25 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                         avatar.grounded = true;
                         avatar.health -= 1;
                         console.log(avatar.health)
-                    }    
+                    }
                 }
             }
         })
 })
 
 //detection for when bullets hit something
-Matter.Events.on(engine, "collisionStart", function (event) { 
+Matter.Events.on(engine, "collisionStart", function (event) {
     for (let i = 0; i < bullets.length; i++) {
         event.pairs
-            .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData) 
+            .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData)
             .forEach(pair => {
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
-                for (let j = 0; j < gameObjectManager.length; j++) {
-                    const beingShotGameObject = gameObjectManager[j];
-                    if (beingShot == beingShotGameObject.matterData) {
-                        console.log("Shot something")
-                        if (beingShotGameObject instanceof Entity) { //this should check if it is an entity first. combine both statements when this error is fixed
-                            console.log("it was an Entity")
-                            beingShotGameObject.health -= 1
-                            console.log("The enemy's health is " + beingShotGameObject.health)
+                    for (let j = 0; j < gameObjectManager.length; j++) {
+                        const beingShotGameObject = gameObjectManager[j]; //fixes body issue with beingShot
+                        if (beingShot == beingShotGameObject.matterData) {
+                            bullets[i].hit(beingShotGameObject) //see hit method in bullets
                         }
-                        bullets[i].dead = true;
                     }
-                }
             })
     }
 })
@@ -143,7 +137,7 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
                     avatar.grounded = false; //when the collision ends, the player is no longer grounded
                 }
             }
-            for (let i = 0; i < basicEnemies.length; i++) { 
+            for (let i = 0; i < basicEnemies.length; i++) {
                 if (possibleGrounding == basicEnemies[i].matterData) {
                     if (avatar.matterData.position.y < basicEnemies[i].matterData.position.y) {
                         avatar.grounded = false;
@@ -173,7 +167,7 @@ function gameLoop(delta: number) {
         let now = Date.now(); //number of milliseconds since 1/1/1970
 
         if ((now - lastBulletTime) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
-            fire(false);
+            fire(false, true);
             lastBulletTime = now; //updates the last time a bullet was fired.
         }
     }
@@ -182,7 +176,7 @@ function gameLoop(delta: number) {
         let now = Date.now();
 
         if ((now - lastBulletTime) > 300) {
-            fire(true);
+            fire(true, true);
             lastBulletTime = now;
         }
     }
