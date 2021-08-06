@@ -118,17 +118,15 @@ Matter.Events.on(engine, "collisionStart", function (event) {
             .forEach(pair => {
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
                 for (let j = 0; j < gameObjectManager.length; j++) {
-                    if (beingShot == gameObjectManager[j].matterData) {
-                        if (beingShot instanceof Entity) { //this should check if it is an entity first
-                            console.log("Shot an Entity")
-                            beingShot.health -= 1
-                            console.log(beingShot.health)
-                            bullets[i].dead = true;
-                        } else { //then, if beingShot is not an entity
-                            console.log("shot something")
-                            bullets[i].dead = true;
-                            console.log(enemy1.health)
+                    const beingShotGameObject = gameObjectManager[j];
+                    if (beingShot == beingShotGameObject.matterData) {
+                        console.log("Shot something")
+                        if (beingShotGameObject instanceof Entity) { //this should check if it is an entity first. combine both statements when this error is fixed
+                            console.log("it was an Entity")
+                            beingShotGameObject.health -= 1
+                            console.log("The enemy's health is " + beingShotGameObject.health)
                         }
+                        bullets[i].dead = true;
                     }
                 }
             })
