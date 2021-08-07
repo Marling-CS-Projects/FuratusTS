@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
 import { Entity, Avatar, BasicEnemy } from './Entity'
 import * as PIXI from 'pixi.js'
-import { platforms1, spikes1 } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1 } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -43,21 +43,16 @@ document.body.appendChild(canvas.view);
 
 
 //adds player and level matterData to the engine so that they work with physics.
-World.add(engine.world, [avatar.matterData, enemy1.matterData]);
-for (let i = 0; i < platforms1.length; i++) { //adds every platform to the engine
-    World.add(engine.world, [platforms1[i].matterData])
-}
-for (let i = 0; i < spikes1.length; i++) {
-    World.add(engine.world, [spikes1[i].matterData])
+World.add(engine.world, [avatar.matterData, enemy1.matterData,]);
+for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the engine
+    World.add(engine.world, [lvl1map[i].matterData])
 }
 //adds the pixiData of objects to the stage so they are shown.
 canvas.stage.addChild(avatar.pixiData, enemy1.pixiData, avdead, deadmsg);
-for (let i = 0; i < platforms1.length; i++) { //adds every platform to the stage
-    canvas.stage.addChild(platforms1[i].pixiData)
+for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the stage
+    canvas.stage.addChild(lvl1map[i].pixiData)
 }
-for (let i = 0; i < spikes1.length; i++) {
-    canvas.stage.addChild(spikes1[i].pixiData)
-}
+
 
 //keyboard event handlers
 window.addEventListener("keydown", keysDown);
@@ -76,7 +71,7 @@ function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
 
-//collision detection
+//collision detection for avatar. use similar method to bullets to compact these into one or statement later.
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
     event.pairs
         .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData) //filter with avatar as bodyA or bodyB
@@ -86,6 +81,14 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             for (let i = 0; i < platforms1.length; i++) {
                 if (collidingWith == platforms1[i].matterData) { //if they are colliding, then the player is on the ground.
                     avatar.grounded = true;
+                }
+            }
+            //for cannon collisions
+            for (let i = 0; i < cannons1.length; i++) {
+                if (collidingWith == cannons1[i].matterData) {
+                    if ((cannons1[i].matterData.position.x - 25 < avatar.matterData.position.x)|| (avatar.matterData.position.x < cannons1[i].matterData.position.x + 25)) {
+                        avatar.grounded = true;
+                    }
                 }
             }
             //for spike collisions
@@ -110,7 +113,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
         })
 })
 
-//detection for when bullets hit something
+//collision detection for bullets
 Matter.Events.on(engine, "collisionStart", function (event) {
     for (let i = 0; i < bullets.length; i++) {
         event.pairs
@@ -127,6 +130,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
     }
 })
 
+//collision end detection for avatar
 Matter.Events.on(engine, "collisionEnd", function (event) {
     event.pairs
         .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData)
@@ -144,10 +148,22 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
                     }
                 }
             }
+            for (let i = 0; i < cannons1.length; i++) {
+                if (possibleGrounding == cannons1[i].matterData) {
+                    if ((cannons1[i].matterData.position.x - 30 < avatar.matterData.position.x)|| (avatar.matterData.position.x < cannons1[i].matterData.position.x + 30)) {
+                        avatar.grounded = false;
+                    }
+                }
+            }
         })
 })
 
-let lastBulletTime: number = null;
+let lastBulletTime: number = 0;
+
+function updateElapsed() {
+    elapsed = Date.now() - lastBulletTime;
+}
+export let elapsed: number = (Date.now() - lastBulletTime);
 function gameLoop(delta: number) {
     for (let i = 0; i < bullets.length; i++) {
         if (bullets[i].dead) { //removes bullets that are out of screen.
@@ -164,20 +180,18 @@ function gameLoop(delta: number) {
     }
     //C         
     if (keys["88"] && avatar.dead === false) {
-        let now = Date.now(); //number of milliseconds since 1/1/1970
 
-        if ((now - lastBulletTime) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
+        if ((elapsed) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
             fire(false, true);
-            lastBulletTime = now; //updates the last time a bullet was fired.
+            lastBulletTime = Date.now();  //updates the last time a bullet was fired;
         }
     }
     //X
     if (keys["67"] && avatar.dead === false) {
-        let now = Date.now();
 
-        if ((now - lastBulletTime) > 300) {
+        if ((elapsed) > 300) {
             fire(true, true);
-            lastBulletTime = now;
+            lastBulletTime = Date.now();
         }
     }
 
@@ -202,16 +216,19 @@ function gameLoop(delta: number) {
     avatar.update(delta)
     enemy1.update(delta)
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
-    for (let i = 0; i < platforms1.length; i++) {
-        platforms1[i].update(delta)
+    for (let i = 0; i < lvl1map.length; i++) {
+        lvl1map[i].update(delta)
     }
-    for (let i = 0; i < spikes1.length; i++) {
-        spikes1[i].update(delta)
-    }
+
+    updateElapsed();
     Engine.update(engine, delta * 10)
 }
 
 //array of all gameObjects. stored seperately to stop circular dependency error.
 export const gameObjectManager: GameObject[] = [];
-gameObjectManager.push(avatar, enemy1, ...platforms1, ...spikes1)
+gameObjectManager.push(avatar, enemy1, ...lvl1map)
 
+let cringe = new PIXI.Text('swaggin im swaggin im swagging im swaggin on you')
+canvas.stage.addChild(cringe)
+cringe.position.x = 950
+cringe.position.y = 340

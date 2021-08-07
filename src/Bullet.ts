@@ -18,10 +18,7 @@ export class Bullet extends GameObject { //creates a bullet class
         this.firedByAvatar = firedByAvatar;
     }
     update(delta: number) {
-        this.pixiData.position.x = this.matterData.position.x;
-        this.pixiData.position.y = this.matterData.position.y;
-        this.pixiData.rotation = this.matterData.angle;
-        this.pixiData.anchor.set(0.5);
+        super.update(delta);
         for (let i = 0; i < bullets.length; i++) {
             Body.setVelocity(bullets[i].matterData, { x: bullets[i].speed, y: 0 });; //bullets move to the right when x is pressed
             if (bullets[i].matterData.position.x < -3000 || bullets[i].matterData.position.x - avatar.matterData.position.x > 3000) { //if bullets have moved too far, then they are dead.
@@ -38,7 +35,6 @@ export class Bullet extends GameObject { //creates a bullet class
                 console.log("The entity's health is " + beingShotGameObject.health)//testing
 
             }
-
         }
         this.dead = true;
     }
@@ -66,3 +62,4 @@ export function createBullet(left: boolean, firedByAvatar: boolean) { // is resp
 
     return bullet;
 }
+

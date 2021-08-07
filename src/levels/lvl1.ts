@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js';
 import { Bodies } from 'matter-js';
 import { Platform, Wall} from '../Walls'
-import { Spike } from '../Obstacles'
+import { Spike, Cannon } from '../Obstacles'
 import { GameObject } from '../GameObject';
 
 //platforms created for level 1
@@ -18,3 +18,16 @@ let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectang
 export const spikes1: Spike[] = [];
 spikes1.push(spike, trispike)
 
+//cannons created for level 1
+let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(1400, 200, 60,30, {isStatic:true}), 'right')
+export const cannons1: Cannon[]= [];
+cannons1.push(rightcannon)
+
+
+//creates an array to store all of lvl1 in for level swithching
+export const lvl1map:GameObject[] = [];
+lvl1map.push(platform, platform1, platform2, spike, trispike, rightcannon)
+
+
+//for drawing:
+//cannons should be drawn -40. spikes -30

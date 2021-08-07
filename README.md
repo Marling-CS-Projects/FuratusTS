@@ -1,2 +1,1 @@
-# Furatus-2
-# FuratusTS
+All assets by me.

@@ -18,7 +18,6 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
         this.spawnX = spawnX;
         this.spawnY = spawnY;
     }
-
 }
 
 export class Avatar extends Entity {
@@ -28,9 +27,7 @@ export class Avatar extends Entity {
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
-        this.pixiData.position.x = this.matterData.position.x;
-        this.pixiData.position.y = this.matterData.position.y;
-        this.pixiData.rotation = this.matterData.angle;
+        super.update(delta);
 
         if (this.health == 0) { //checks if the avatar is dead.
             this.dead = true
@@ -60,9 +57,7 @@ export class BasicEnemy extends Entity {
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
-        this.pixiData.position.x = this.matterData.position.x;
-        this.pixiData.position.y = this.matterData.position.y;
-        this.pixiData.rotation = this.matterData.angle;
+        super.update(delta);
 
         if (this.health == 0) { //checks if the enemy is dead.
             this.dead = true
