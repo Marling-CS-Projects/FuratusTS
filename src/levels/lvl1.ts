@@ -19,7 +19,7 @@ export const spikes1: Spike[] = [];
 spikes1.push(spike, trispike)
 
 //cannons created for level 1
-let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(1400, 200, 60,30, {isStatic:true}), 'right')
+let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(1400, 200, 60,30, {isStatic:true}), "right")
 export const cannons1: Cannon[]= [];
 cannons1.push(rightcannon)
 

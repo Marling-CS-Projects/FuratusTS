@@ -3,7 +3,7 @@ import * as Matter from "matter-js";
 import { Body, Bodies, World, Engine } from 'matter-js'
 import * as PIXI from 'pixi.js'
 import { canvas, engine, avatar, bullets } from './index'
-import { Entity } from "./Entity";
+import { Entity, BasicEnemy } from "./Entity";
 
 
 
@@ -11,7 +11,7 @@ export class Bullet extends GameObject { //creates a bullet class
     speed: number;
     dead: boolean;
     firedByAvatar: boolean;
-    constructor(pixiData: any, matterData: any, speed: number, dead: boolean, firedByAvatar: boolean) {
+    constructor(pixiData: any, matterData: any, speed: number, dead: boolean, firedByAvatar: boolean,) {
         super(pixiData, matterData)
         this.speed = speed;
         this.dead = dead;
@@ -30,29 +30,29 @@ export class Bullet extends GameObject { //creates a bullet class
         console.log("Shot something") //testing
         if (beingShotGameObject instanceof Entity) { //only entities can have health removed
             if (!(beingShotGameObject === avatar && this.firedByAvatar === true)) { //means the avatar cannot shoot itself
+                if (!(beingShotGameObject instanceof BasicEnemy && this.firedByAvatar === false))
                 beingShotGameObject.health -= 1;
                 console.log("it was an Entity")//testing
                 console.log("The entity's health is " + beingShotGameObject.health)//testing
-
             }
         }
         this.dead = true;
     }
 }
 
-export function fire(left: boolean, firedByAvatar: boolean) {
+export function fire(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) {
     console.log("Fire!"); //for checking that the bullets are actually firing. will remove when project is finished.
-    let bullet = createBullet(left, firedByAvatar); //calls createBullet function.
+    let bullet = createBullet(left, firedByAvatar, firedByX, firedByY); //calls createBullet function.
     bullets.push(bullet); // adds bullets that have been fired to an array of bullets
 }
 
-export function createBullet(left: boolean, firedByAvatar: boolean) { // is responsible for creating the bullets
-    let x = avatar.pixiData.position.x - 36;
+export function createBullet(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) { // is responsible for creating the bullets
+    let x = firedByX - 36;
     if (left) { //putting this first prevents the bullet from immediately colliding with the avatar when it is drawn, but before the bulletspeed is changed in line 68
-        x = avatar.pixiData.position.x + 36;
+        x = firedByX + 36;
     }
 
-    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, avatar.pixiData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar);
+    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, avatar.matterData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar, );
     if (left) {
         bullet.speed = 10;
 

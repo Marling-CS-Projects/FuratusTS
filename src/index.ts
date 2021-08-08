@@ -182,7 +182,7 @@ function gameLoop(delta: number) {
     if (keys["88"] && avatar.dead === false) {
 
         if ((elapsed) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
-            fire(false, true);
+            fire(false, true, avatar.matterData.position.x, avatar.matterData.position.y);
             lastBulletTime = Date.now();  //updates the last time a bullet was fired;
         }
     }
@@ -190,7 +190,7 @@ function gameLoop(delta: number) {
     if (keys["67"] && avatar.dead === false) {
 
         if ((elapsed) > 300) {
-            fire(true, true);
+            fire(true, true, avatar.matterData.position.x, avatar.matterData.position.y);
             lastBulletTime = Date.now();
         }
     }
@@ -228,7 +228,8 @@ function gameLoop(delta: number) {
 export const gameObjectManager: GameObject[] = [];
 gameObjectManager.push(avatar, enemy1, ...lvl1map)
 
-let cringe = new PIXI.Text('swaggin im swaggin im swagging im swaggin on you')
-canvas.stage.addChild(cringe)
-cringe.position.x = 950
-cringe.position.y = 340
+
+let testtext = new PIXI.Text('test')
+canvas.stage.addChild(testtext)
+testtext.position.x = 950
+testtext.position.y = 340
