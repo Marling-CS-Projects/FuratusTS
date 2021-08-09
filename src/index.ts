@@ -163,6 +163,33 @@ let lastBulletTime: number = 0;
 function updateElapsed() {
     elapsed = Date.now() - lastBulletTime;
 }
+
+let now = Date.now()
+function cannonEmit(){
+        if ((now - lastBulletTime) > 3000) {
+            for (let i = 0; i < cannons1.length; i ++){
+                if (cannons1[i].direction == "left") {
+                    console.log("left")
+                    fire(false, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)//left goes right and right goes left. fix this.
+    
+                }
+                if (cannons1[i].direction == "right") {
+                    console.log("right")
+                    fire(true, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
+                }
+                if (cannons1[i].direction == "both") {
+                    console.log("both")
+                    fire(true, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
+                    fire(false, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
+                }
+
+            }
+            console.log("lastBulletTime reset", lastBulletTime, now)
+            console.log("emitting")
+            now = lastBulletTime;
+            console.log(now)
+        }
+}
 export let elapsed: number = (Date.now() - lastBulletTime);
 function gameLoop(delta: number) {
     for (let i = 0; i < bullets.length; i++) {
@@ -221,6 +248,7 @@ function gameLoop(delta: number) {
     }
 
     updateElapsed();
+    cannonEmit();
     Engine.update(engine, delta * 10)
 }
 
@@ -229,7 +257,7 @@ export const gameObjectManager: GameObject[] = [];
 gameObjectManager.push(avatar, enemy1, ...lvl1map)
 
 
-let testtext = new PIXI.Text('test')
+/*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
 testtext.position.x = 950
-testtext.position.y = 340
+testtext.position.y = 340 */

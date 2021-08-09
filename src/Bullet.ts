@@ -47,12 +47,12 @@ export function fire(left: boolean, firedByAvatar: boolean, firedByX: number, fi
 }
 
 export function createBullet(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) { // is responsible for creating the bullets
-    let x = firedByX - 36;
+    let x = firedByX - 40;
     if (left) { //putting this first prevents the bullet from immediately colliding with the avatar when it is drawn, but before the bulletspeed is changed in line 68
-        x = firedByX + 36;
+        x = firedByX + 40;
     }
 
-    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, avatar.matterData.position.y, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar, );
+    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, firedByY, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar, );
     if (left) {
         bullet.speed = 10;
 

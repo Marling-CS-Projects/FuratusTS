@@ -13,13 +13,13 @@ export const platforms1: Platform[] = [];
 platforms1.push(platform,platform1,platform2)
 
 //spikes created for level 1
-let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1025, 310, 39, 39, {isStatic: true}));
+let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
 let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(475, 310, 117, 39, {isStatic: true }));
 export const spikes1: Spike[] = [];
-spikes1.push(spike, trispike)
+spikes1.push( spike, trispike)
 
 //cannons created for level 1
-let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(1400, 200, 60,30, {isStatic:true}), "right")
+let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(760, 300, 60,30, {isStatic:true}), "right")
 export const cannons1: Cannon[]= [];
 cannons1.push(rightcannon)
 
@@ -30,4 +30,5 @@ lvl1map.push(platform, platform1, platform2, spike, trispike, rightcannon)
 
 
 //for drawing:
+//platforms are drawn from centre.
 //cannons should be drawn -40. spikes -30
