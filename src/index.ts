@@ -171,12 +171,12 @@ let elapsed: number = (Date.now() - lastBulletTime);
 
 function gameLoop(delta: number) {
     for (let i = 0; i < bullets.length; i++) {
-        gameObjectManager.push(bullets[i])
+        
         if (bullets[i].dead) { //removes bullets that are out of screen.
             World.remove(engine.world, bullets[i].matterData)
             canvas.stage.removeChild(bullets[i].pixiData);
             bullets.splice(i, 1); //removes dead bullets from array
-            gameObjectManager.splice(i, 1);
+       
 
         }
     }

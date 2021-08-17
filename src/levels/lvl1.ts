@@ -19,11 +19,11 @@ const spikes1: Spike[] = [];
 spikes1.push( spike, trispike)
 
 //cannons created for level 1
-let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(40, 300, 60,30, {isStatic:true}), "right")
+//let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(40, 300, 60,30, {isStatic:true}), "right")
 let leftcannon = new Cannon(PIXI.Sprite.from("assets/leftcannon.png"), Bodies.rectangle(1700, 200,60,30, {isStatic:true}), "left")
-let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(950, 300,60,30, {isStatic:true}), "both")
+//let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(950, 300,60,30, {isStatic:true}), "both")
 const cannons1: Cannon[]= [];
-cannons1.push(rightcannon, leftcannon, bothcannon)
+cannons1.push( )
 
 
 //creates an array to store all of lvl1 in for level swithching
