@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
 import { Entity, Avatar, BasicEnemy } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, rightcannon} from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -26,6 +26,8 @@ export let basicEnemies: BasicEnemy[] = [];
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false, true, 300, 300);
 
 let enemy1 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+let enemy2 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+let enemy3 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
 basicEnemies.push(enemy1)
 
 //creates the alternative pixiData for a dead avatar outside of the player's view
@@ -166,17 +168,15 @@ let elapsed: number = (Date.now() - lastBulletTime);
 
 
 
-//for (let i = 0; i < cannons1.length; i++) {
-    //setInterval(cannons1[i].emit, 3000)
-//}
 
-setInterval(rightcannon.emit, 3000)
 function gameLoop(delta: number) {
     for (let i = 0; i < bullets.length; i++) {
+        gameObjectManager.push(bullets[i])
         if (bullets[i].dead) { //removes bullets that are out of screen.
             World.remove(engine.world, bullets[i].matterData)
             canvas.stage.removeChild(bullets[i].pixiData);
             bullets.splice(i, 1); //removes dead bullets from array
+            gameObjectManager.splice(i, 1);
 
         }
     }
@@ -233,9 +233,12 @@ function gameLoop(delta: number) {
 }
 
 //array of all gameObjects. stored seperately to stop circular dependency error.
-export const gameObjectManager: GameObject[] = [];
-gameObjectManager.push(avatar, enemy1, ...lvl1map)
+export let gameObjectManager: GameObject[] = [];
+gameObjectManager.push(avatar, enemy1, ...lvl1map,)
 
+for (let i = 0; i < cannons1.length; i++) {
+    setInterval(cannons1[i].emit, 3000)
+}
 
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)

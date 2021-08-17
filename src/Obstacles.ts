@@ -19,24 +19,23 @@ export class Cannon extends Obstacle {
     constructor(pixiData: any, matterData: any, direction: Direction) {
         super(pixiData, matterData)
         this.direction = direction;
+
+        this.emit = this.emit.bind(this) //fixes bug with cannon 
     }
 
-    emit() {
-            console.log("emitting")
-            if (this.direction == "left") {
-                console.log("left")
-                fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
 
-            }
-            if (this.direction == "right") {
-                console.log("right")
-                fire(true, false, this.matterData.position.x, this.matterData.position.y)
-            }
-            if (this.direction == "both") {
-                console.log("both")
-                fire(true, false, this.matterData.position.x, this.matterData.position.y)
-                fire(false, false, this.matterData.position.x, this.matterData.position.y)
-            }
+    emit() {
+
+        if (this.direction == "left") {
+            fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
+        }
+        if (this.direction == "right") {
+            fire(true, false, this.matterData.position.x, this.matterData.position.y)
+        }
+        if (this.direction == "both") {
+            fire(true, false, this.matterData.position.x, this.matterData.position.y)
+            fire(false, false, this.matterData.position.x, this.matterData.position.y)
+        }
 
     }
 }

@@ -41,7 +41,6 @@ export class Bullet extends GameObject { //creates a bullet class
 }
 
 export function fire(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) {
-    console.log("Fire!"); //for checking that the bullets are actually firing. will remove when project is finished.
     let bullet = createBullet(left, firedByAvatar, firedByX, firedByY); //calls createBullet function.
     bullets.push(bullet); // adds bullets that have been fired to an array of bullets
 }
