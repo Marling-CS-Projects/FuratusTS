@@ -14,10 +14,6 @@ export class Spike extends Obstacle {
 
 type Direction = "left" | "right" | "both"; //creates a type union for direction that only allows left, right or up to be inputted.
 
-
-let lastBulletTime = 0;
-
-
 export class Cannon extends Obstacle {
     direction: any;
     constructor(pixiData: any, matterData: any, direction: Direction) {
@@ -25,16 +21,7 @@ export class Cannon extends Obstacle {
         this.direction = direction;
     }
 
-    update(delta: number) {
-        super.update(delta);
-
-
-    }
-
     emit() {
-        let now = Date.now()
-        if (now - lastBulletTime > 3000) {
-            console.log("lastBulletTime reset", lastBulletTime, now)
             console.log("emitting")
             if (this.direction == "left") {
                 console.log("left")
@@ -50,7 +37,6 @@ export class Cannon extends Obstacle {
                 fire(true, false, this.matterData.position.x, this.matterData.position.y)
                 fire(false, false, this.matterData.position.x, this.matterData.position.y)
             }
-            now = lastBulletTime;
-        }
+
     }
 }

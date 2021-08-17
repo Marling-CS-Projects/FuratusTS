@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
 import { Entity, Avatar, BasicEnemy } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1 } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, rightcannon} from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -86,7 +86,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             //for cannon collisions
             for (let i = 0; i < cannons1.length; i++) {
                 if (collidingWith == cannons1[i].matterData) {
-                    if ((cannons1[i].matterData.position.x - 25 < avatar.matterData.position.x)|| (avatar.matterData.position.x < cannons1[i].matterData.position.x + 25)) {
+                    if ((cannons1[i].matterData.position.x - 25 < avatar.matterData.position.x) || (avatar.matterData.position.x < cannons1[i].matterData.position.x + 25)) {
                         avatar.grounded = true;
                     }
                 }
@@ -120,12 +120,12 @@ Matter.Events.on(engine, "collisionStart", function (event) {
             .filter(pair => pair.bodyA == bullets[i].matterData || pair.bodyB == bullets[i].matterData)
             .forEach(pair => {
                 let beingShot = pair.bodyA == bullets[i].matterData ? pair.bodyB : pair.bodyA;
-                    for (let j = 0; j < gameObjectManager.length; j++) {
-                        const beingShotGameObject = gameObjectManager[j]; //fixes body issue with beingShot
-                        if (beingShot == beingShotGameObject.matterData) {
-                            bullets[i].hit(beingShotGameObject) //see hit method in bullets
-                        }
+                for (let j = 0; j < gameObjectManager.length; j++) {
+                    const beingShotGameObject = gameObjectManager[j]; //fixes body issue with beingShot
+                    if (beingShot == beingShotGameObject.matterData) {
+                        bullets[i].hit(beingShotGameObject) //see hit method in bullets
                     }
+                }
             })
     }
 })
@@ -150,7 +150,7 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
             }
             for (let i = 0; i < cannons1.length; i++) {
                 if (possibleGrounding == cannons1[i].matterData) {
-                    if ((cannons1[i].matterData.position.x - 30 < avatar.matterData.position.x)|| (avatar.matterData.position.x < cannons1[i].matterData.position.x + 30)) {
+                    if ((cannons1[i].matterData.position.x - 30 < avatar.matterData.position.x) || (avatar.matterData.position.x < cannons1[i].matterData.position.x + 30)) {
                         avatar.grounded = false;
                     }
                 }
@@ -159,38 +159,18 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
 })
 
 let lastBulletTime: number = 0;
-
 function updateElapsed() {
     elapsed = Date.now() - lastBulletTime;
 }
+let elapsed: number = (Date.now() - lastBulletTime);
 
-let now = Date.now()
-function cannonEmit(){
-        if ((now - lastBulletTime) > 3000) {
-            for (let i = 0; i < cannons1.length; i ++){
-                if (cannons1[i].direction == "left") {
-                    console.log("left")
-                    fire(false, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)//left goes right and right goes left. fix this.
-    
-                }
-                if (cannons1[i].direction == "right") {
-                    console.log("right")
-                    fire(true, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
-                }
-                if (cannons1[i].direction == "both") {
-                    console.log("both")
-                    fire(true, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
-                    fire(false, false, cannons1[i].matterData.position.x, cannons1[i].matterData.position.y)
-                }
 
-            }
-            console.log("lastBulletTime reset", lastBulletTime, now)
-            console.log("emitting")
-            now = lastBulletTime;
-            console.log(now)
-        }
-}
-export let elapsed: number = (Date.now() - lastBulletTime);
+
+//for (let i = 0; i < cannons1.length; i++) {
+    //setInterval(cannons1[i].emit, 3000)
+//}
+
+setInterval(rightcannon.emit, 3000)
 function gameLoop(delta: number) {
     for (let i = 0; i < bullets.length; i++) {
         if (bullets[i].dead) { //removes bullets that are out of screen.
@@ -248,7 +228,7 @@ function gameLoop(delta: number) {
     }
 
     updateElapsed();
-    cannonEmit();
+
     Engine.update(engine, delta * 10)
 }
 
