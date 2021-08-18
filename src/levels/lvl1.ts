@@ -4,6 +4,7 @@ import { Bodies } from 'matter-js';
 import { Platform, Wall} from '../Walls'
 import { Spike, Cannon } from '../Obstacles'
 import { GameObject } from '../GameObject';
+import {BasicEnemy} from '../Entity'
 
 //platforms created for level 1
 let platform = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
@@ -23,12 +24,19 @@ let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.
 let leftcannon = new Cannon(PIXI.Sprite.from("assets/leftcannon.png"), Bodies.rectangle(1700, 200,60,30, {isStatic:true}), "left")
 let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(950, 300,60,30, {isStatic:true}), "both")
 const cannons1: Cannon[]= [];
-cannons1.push(rightcannon )
+cannons1.push(rightcannon, leftcannon, bothcannon )
+
+//enemies created for level 1
+let enemy1 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+let enemy2 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(700, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+let enemy3 = new BasicEnemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(1500, 200, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
+export const enemies1: BasicEnemy[] = [];
+enemies1.push(enemy1, enemy2, enemy3)
 
 
 //creates an array to store all of lvl1 in for level swithching
 const lvl1map:GameObject[] = [];
-lvl1map.push(...platforms1, ...spikes1, ...cannons1) 
+lvl1map.push(...platforms1, ...spikes1, ...cannons1, ...enemies1) 
 
 
 //for drawing:
