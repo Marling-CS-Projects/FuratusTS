@@ -20,6 +20,9 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
     }
 }
 
+export class Enemy extends Entity {
+    
+}
 export class Avatar extends Entity {
     grounded: boolean;
     constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX:number, spawnY:number,) {

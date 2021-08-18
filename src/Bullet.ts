@@ -2,7 +2,7 @@ import { GameObject } from "./GameObject";
 import * as Matter from "matter-js";
 import { Body, Bodies, World, Engine } from 'matter-js'
 import * as PIXI from 'pixi.js'
-import { canvas, engine, avatar, bullets } from './index'
+import { canvas, engine, avatar, bullets, gameObjectManager } from './index'
 import { Entity, BasicEnemy } from "./Entity";
 
 
@@ -43,6 +43,7 @@ export class Bullet extends GameObject { //creates a bullet class
 export function fire(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) {
     let bullet = createBullet(left, firedByAvatar, firedByX, firedByY); //calls createBullet function.
     bullets.push(bullet); // adds bullets that have been fired to an array of bullets
+    gameObjectManager.push(bullet); //adds bullets to the gameObject manager so they can collide with each other
 }
 
 export function createBullet(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) { // is responsible for creating the bullets
