@@ -27,7 +27,7 @@ const cannons1: Cannon[]= [];
 //cannons1.push(rightcannon, leftcannon, bothcannon )
 
 //enemies created for level 1
-let prEnemy1 = new ProjectileEnemy(PIXI.Sprite.from("assets/projectile.png"), Bodies.rectangle(1500, 200, 60, 60, { inertia: Infinity }), 3, false, 1500, 200, "none", false)
+export let prEnemy1 = new ProjectileEnemy(PIXI.Sprite.from("assets/projectile.png"), Bodies.rectangle(1500, 200, 60, 60, { inertia: Infinity }), 3, false, 1500, 200, "none", false)
 let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(700, 300, 60, 60, { inertia: Infinity }), 3, false, 700, 300)
 let enemy2 = new Enemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 3, false, 200, 300)
 export const enemies1:Enemy[] = [];

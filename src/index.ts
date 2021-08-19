@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
 import { Avatar } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1 } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, prEnemy1 } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -235,11 +235,9 @@ for (let i = 0; i < cannons1.length; i++) {
 
 //projectile enemies fire if avatar is in proximity to them
 for (let i = 0; i < prEnemies1.length; i++) {
-    if(prEnemies1[i].inProx == true) {
-        setInterval(prEnemies1[i].emit, 1000)
-    }
+    setInterval(prEnemies1[i].emit, 1000)
 }
-
+    
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
 testtext.position.x = 950
