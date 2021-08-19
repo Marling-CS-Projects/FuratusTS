@@ -25,7 +25,6 @@ export class Cannon extends Obstacle {
 
 
     emit() {
-
         if (this.direction == "left") {
             fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
         }

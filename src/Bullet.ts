@@ -3,7 +3,7 @@ import * as Matter from "matter-js";
 import { Body, Bodies, World, Engine } from 'matter-js'
 import * as PIXI from 'pixi.js'
 import { canvas, engine, avatar, bullets, gameObjectManager } from './index'
-import { Entity, BasicEnemy } from "./Entity";
+import { Entity, Enemy } from "./Entity";
 
 
 
@@ -30,7 +30,7 @@ export class Bullet extends GameObject { //creates a bullet class
         console.log("Shot something") //testing
         if (beingShotGameObject instanceof Entity) { //only entities can have health removed
             if (!(beingShotGameObject === avatar && this.firedByAvatar === true)) { //means the avatar cannot shoot itself
-                if (!(beingShotGameObject instanceof BasicEnemy && this.firedByAvatar === false))
+                if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false))
                 beingShotGameObject.health -= 1;
                 console.log("it was an Entity")//testing
                 console.log("The entity's health is " + beingShotGameObject.health)//testing
@@ -48,7 +48,7 @@ export function fire(left: boolean, firedByAvatar: boolean, firedByX: number, fi
 
 export function createBullet(left: boolean, firedByAvatar: boolean, firedByX: number, firedByY: number) { // is responsible for creating the bullets
     let x = firedByX - 40;
-    if (left) { //putting this first prevents the bullet from immediately colliding with the avatar when it is drawn, but before the bulletspeed is changed in line 68
+    if (left) { //putting this first prevents the bullet from immediately colliding with the avatar when it is drawn, but before the bulletspeed is changed
         x = firedByX + 40;
     }
 

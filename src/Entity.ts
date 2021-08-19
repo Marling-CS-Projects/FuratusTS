@@ -1,9 +1,9 @@
 import { GameObject } from './GameObject'
 import { avatar, avdead , deadmsg } from './index'
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js';
 import { Body } from 'matter-js';
-import { Sprite } from 'pixi.js';
+import { fire } from './Bullet'
+
+
 
 
 export abstract class Entity extends GameObject { //for all 'living' objects in the game.
@@ -20,9 +20,6 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
     }
 }
 
-export class Enemy extends Entity {
-    
-}
 export class Avatar extends Entity {
     grounded: boolean;
     constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX:number, spawnY:number,) {
@@ -54,7 +51,7 @@ export class Avatar extends Entity {
     }
 }
 
-export class BasicEnemy extends Entity {
+export class Enemy extends Entity {
     constructor(pixiData: any, matterData: any, health: number, dead:boolean,spawnX:number, spawnY:number ) {
         super( pixiData, matterData, health, dead, spawnX, spawnY)
     }
@@ -75,5 +72,60 @@ export class BasicEnemy extends Entity {
     }
     findAvatar() {
         //dijkstra's to find avatar
+    }
+}
+
+type direction = "left" | "right" | "none"; //creates a type union for direction that only allows left, right or up to be inputted.
+
+export class ProjectileEnemy extends Enemy {
+    direction: direction
+    inProx: boolean
+    constructor(pixiData: any, matterData: any, health: number, dead:boolean,spawnX:number, spawnY:number, direction:direction, inProx:boolean ) {
+        super( pixiData, matterData, health, dead, spawnX, spawnY)
+        this.direction = direction;
+        this.inProx = inProx;
+    }
+
+    update(delta:number){
+        super.update(delta)
+        this.avatarProx()
+        this.detectDirection()
+        if (this.inProx == true) {
+            this.emit()
+        }
+    }
+    avatarProx() { //used to find how close the avatar is to the entity.
+        //uses pythagoras to calculate distance between the avatar and the enemy
+        let a:number;
+        if (avatar.matterData.position.x > this.matterData.position.x) { //prevents having a negative a value
+           a= avatar.matterData.position.x - this.matterData.position.x
+        } else {
+            a= this.matterData.position.x - avatar.matterData.position.x
+        }
+        let b = avatar.matterData.position.y - this.matterData.position.y
+        let c = Math.sqrt(((a^2)+(b^2))) //a squared plus b squared equals c squared
+        if (c < 22) { //arbitrary number I picked that seemed good
+            this.inProx = true
+        } else if (c > 22) {
+            this.inProx = false
+        }
+    }
+
+    detectDirection(){
+        if ( avatar.matterData.position.x > this.matterData.position.x) {
+            this.direction = "right"
+        } else {
+            this.direction = "left"
+        }
+    }
+
+    emit() {
+        console.log("prEnemy shooting")
+        if (this.direction == "left") {
+            fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
+        }
+        if (this.direction == "right") {
+            fire(true, false, this.matterData.position.x, this.matterData.position.y)
+        }
     }
 }

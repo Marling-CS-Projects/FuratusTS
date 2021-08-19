@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
-import { Entity, Avatar, BasicEnemy } from './Entity'
+import { Avatar } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1 } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1 } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -197,7 +197,7 @@ function gameLoop(delta: number) {
     //R allows the player to reset the avatar in case of death
     if (keys["82"]) {
         avatar.reset()
-        for (let i = 0; i < bullets.length; i++){
+        for (let i = 0; i < enemies1.length; i++){
             enemies1[i].reset()
         }
         for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
@@ -221,7 +221,6 @@ function gameLoop(delta: number) {
     }
 
     updateElapsed();
-
     Engine.update(engine, delta * 10)
 }
 
@@ -229,8 +228,16 @@ function gameLoop(delta: number) {
 export let gameObjectManager: GameObject[] = [];
 gameObjectManager.push(avatar, ...lvl1map,)
 
+//fires cannons every 3 seconds
 for (let i = 0; i < cannons1.length; i++) {
     setInterval(cannons1[i].emit, 3000)
+}
+
+//projectile enemies fire if avatar is in proximity to them
+for (let i = 0; i < prEnemies1.length; i++) {
+    if(prEnemies1[i].inProx == true) {
+        setInterval(prEnemies1[i].emit, 1000)
+    }
 }
 
 /*let testtext = new PIXI.Text('test')
