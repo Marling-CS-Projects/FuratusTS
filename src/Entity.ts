@@ -1,7 +1,8 @@
 import { GameObject } from './GameObject'
-import { avatar, avdead, deadmsg } from './index'
+import { avatar, deadmsg } from './index'
 import { Body } from 'matter-js';
 import { fire } from './Bullet'
+import * as PIXI from 'pixi.js' 
 
 
 
@@ -20,6 +21,9 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
     }
 }
 
+//creates textures for avatar death and reset
+let avliving = PIXI.Texture.from("assets/avatar.png")
+let avdead = PIXI.Texture.from("assets/avdead.png")
 export class Avatar extends Entity {
     grounded: boolean;
     constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX: number, spawnY: number,) {
@@ -31,8 +35,7 @@ export class Avatar extends Entity {
 
         if (this.health == 0) { //checks if the avatar is dead.
             this.dead = true
-            avdead.x = avatar.pixiData.position.x;
-            avdead.y = avatar.pixiData.position.y;
+            this.pixiData.texture = avdead
             deadmsg.x = avatar.pixiData.position.x;
             deadmsg.y = avatar.pixiData.position.y + 50
 
@@ -40,12 +43,11 @@ export class Avatar extends Entity {
     }
 
     reset() {
-        this.dead = false
         this.health = 10
+        this.dead = false
         this.grounded = true
-        avdead.x = 0
+        this.pixiData.texture = avliving
         deadmsg.x = 0
-        avdead.y = 1200
         deadmsg.y = 1200 //resets death sprites so they can't be seen.
         Body.setPosition(avatar.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
     }

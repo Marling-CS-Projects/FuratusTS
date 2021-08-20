@@ -1,7 +1,7 @@
 //import { updateBullets, fire } from './Bullets'
 import { Avatar } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, prEnemy1 } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
@@ -24,13 +24,10 @@ export let bullets: Bullet[] = []; //create an empty array to store bullets in
 //creates an avatar for the player that has both matter and pixi properties and health.
 export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false, true, 300, 300);
 
+
 //creates the alternative pixiData for a dead avatar outside of the player's view
-export let avdead = PIXI.Sprite.from("assets/avdead.png");
 export let deadmsg = PIXI.Sprite.from("assets/youdied.png")
-avdead.anchor.set(0.5)
-avdead.x = 0
 deadmsg.x = 0
-avdead.y = 1395
 deadmsg.y = 1395
 
 canvas.renderer.view.style.position = 'absolute';
@@ -44,7 +41,7 @@ for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the engine
     World.add(engine.world, [lvl1map[i].matterData])
 }
 //adds the pixiData of objects to the stage so they are shown.
-canvas.stage.addChild(avatar.pixiData,  avdead, deadmsg);
+canvas.stage.addChild(avatar.pixiData, deadmsg);
 for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the stage
     canvas.stage.addChild(lvl1map[i].pixiData)
 }
