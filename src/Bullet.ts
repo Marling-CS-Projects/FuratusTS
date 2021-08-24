@@ -31,9 +31,13 @@ export class Bullet extends GameObject { //creates a bullet class
         if (beingShotGameObject instanceof Entity) { //only entities can have health removed
             if (!(beingShotGameObject === avatar && this.firedByAvatar === true)) { //means the avatar cannot shoot itself
                 if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false))
+                if(this.firedByAvatar = true){
+                    beingShotGameObject.health -= avatar.damage
+                } else {
                 beingShotGameObject.health -= 1;
-                console.log("it was an Entity")//testing
-                console.log("The entity's health is " + beingShotGameObject.health)//testing
+                }
+                //console.log("it was an Entity")//testing
+                //console.log("The entity's health is " + beingShotGameObject.health)//testing
             }
         }
         this.dead = true;

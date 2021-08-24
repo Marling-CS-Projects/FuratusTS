@@ -1,11 +1,15 @@
 //import { updateBullets, fire } from './Bullets'
-import { Avatar } from './Entity'
+import { Avatar, power } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, } from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, powerups1} from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
+import { Powerup } from './Powerups'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
+
+export var powerActive:boolean = false; //for powerups
+
 
 export const engine = Engine.create();
 const loader = PIXI.Loader
@@ -22,7 +26,7 @@ export let canvas = new PIXI.Application(
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 10, false, true, 300, 300);
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1,"none");
 
 
 //creates the alternative pixiData for a dead avatar outside of the player's view
@@ -103,6 +107,14 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                     }
                 }
             }
+            //for powerup collisions
+            for (let i =  0; i < powerups1.length; i++) {
+                if (collidingWith == powerups1[i].matterData) {
+                    console.log("colliding")
+                    avatar.applyPower(powerups1[i].power)
+                    Body.setPosition(powerups1[i].matterData, {x: 3000, y: 800})
+                }
+            }
         })
 })
 
@@ -166,7 +178,6 @@ function gameLoop(delta: number) {
             World.remove(engine.world, bullets[i].matterData)
             canvas.stage.removeChild(bullets[i].pixiData);
             bullets.splice(i, 1); //removes dead bullets from array
-            gameObjectManager.pop()
         }
     }
     canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2; //centres the camera on the avatar.
@@ -196,6 +207,9 @@ function gameLoop(delta: number) {
         avatar.reset()
         for (let i = 0; i < enemies1.length; i++){
             enemies1[i].reset()
+        }
+        for (let i = 0; i < powerups1.length; i++) {
+            powerups1[i].reset()
         }
         for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
             bullets[i].dead = true;

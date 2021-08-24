@@ -3,6 +3,7 @@ import { avatar, deadmsg } from './index'
 import { Body } from 'matter-js';
 import { fire } from './Bullet'
 import * as PIXI from 'pixi.js' 
+import { Powerup } from './Powerups';
 
 
 
@@ -23,11 +24,19 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
 
 //creates textures for avatar death and reset
 let avliving = PIXI.Texture.from("assets/avatar.png")
+let avlow = PIXI.Texture.from("assets/avlow.png")
 let avdead = PIXI.Texture.from("assets/avdead.png")
+
+export type power = "shield" | "dmgbuff" | "invincible" | "none"
 export class Avatar extends Entity {
     grounded: boolean;
-    constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX: number, spawnY: number,) {
+    damage:number;
+    power:power;
+    constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX: number, spawnY: number, damage:number, power:power) {
         super(pixiData, matterData, health, dead, spawnX, spawnY,)
+        this.damage = damage;
+        this.grounded = grounded;
+        this.power = power;
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
@@ -39,6 +48,14 @@ export class Avatar extends Entity {
             deadmsg.x = avatar.pixiData.position.x;
             deadmsg.y = avatar.pixiData.position.y + 50
 
+        } else {
+            this.dead = false
+        }
+
+        if (this.health == 1){
+            this.pixiData.texture = avlow
+        } else if (this.health > 1) {
+            this.pixiData.texture = avliving
         }
     }
 
@@ -47,9 +64,23 @@ export class Avatar extends Entity {
         this.dead = false
         this.grounded = true
         this.pixiData.texture = avliving
+        this.power = "none"
         deadmsg.x = 0
         deadmsg.y = 1200 //resets death sprites so they can't be seen.
         Body.setPosition(avatar.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
+    }
+
+    applyPower(power:power){
+        console.log("applying power", power)
+        if (power = "shield"){
+
+        } else if (power = "dmgbuff"){
+            this.damage = 3
+            console.log("damage is up", avatar.damage)
+        } else if (power = "invincible"){
+
+        }
+
     }
 }
 
