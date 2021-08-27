@@ -110,7 +110,6 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             //for powerup collisions
             for (let i =  0; i < powerups1.length; i++) {
                 if (collidingWith == powerups1[i].matterData) {
-                    console.log("colliding")
                     avatar.applyPower(powerups1[i].power)
                     Body.setPosition(powerups1[i].matterData, {x: 3000, y: 800})
                 }
