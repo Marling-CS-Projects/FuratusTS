@@ -21,6 +21,4 @@ export class Powerup extends GameObject {
     reset(){
         Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY })
     }
-
-    
 }

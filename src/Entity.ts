@@ -70,17 +70,29 @@ export class Avatar extends Entity {
         Body.setPosition(avatar.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
     }
 
-    applyPower(power:power){
-        console.log("applying power", power)
-        if (power = "shield"){
-
-        } else if (power = "dmgbuff"){
+    applyPower(powerAdded:power){
+        console.log("applying power", powerAdded)
+        this.power = powerAdded; //means the power is active
+        if (powerAdded = "shield"){
+            setTimeout(this.removePower, 10000)
+            
+        } else if (powerAdded = "dmgbuff"){
             this.damage = 3
             console.log("damage is up", avatar.damage)
-        } else if (power = "invincible"){
+        } else if (powerAdded = "invincible"){
+            let targetHealth = avatar.health; //create a variable to check against if the health decreases
+            if (avatar.health !== targetHealth) {//if the health decreases, 
+                avatar.health = targetHealth
+                this.removePower() 
+            }
 
         }
 
+    }
+
+    removePower(){
+        this.power = "none"
+        this.damage = 1
     }
 }
 

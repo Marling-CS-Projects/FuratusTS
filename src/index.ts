@@ -1,14 +1,14 @@
 //import { updateBullets, fire } from './Bullets'
 import { Avatar, power } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, powerups1} from './levels/lvl1'
+import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, powerups1 } from './levels/lvl1'
 import { Bullet, fire } from './Bullet'
 import { Powerup } from './Powerups'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
 
-export var powerActive:boolean = false; //for powerups
+export var powerActive: boolean = false; //for powerups
 
 
 export const engine = Engine.create();
@@ -26,7 +26,7 @@ export let canvas = new PIXI.Application(
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
 
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1,"none");
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1, "none");
 
 
 //creates the alternative pixiData for a dead avatar outside of the player's view
@@ -102,16 +102,19 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                         enemies1[i].health = 0;
                     } else {
                         avatar.grounded = true;
-                        avatar.health -= 1;
-                        console.log(avatar.health)
+                        if (avatar.power != "shield") {
+                            avatar.health -= 1;
+                            console.log(avatar.health)
+                        }    
                     }
                 }
             }
             //for powerup collisions
-            for (let i =  0; i < powerups1.length; i++) {
+            for (let i = 0; i < powerups1.length; i++) {
                 if (collidingWith == powerups1[i].matterData) {
-                    avatar.applyPower(powerups1[i].power)
-                    Body.setPosition(powerups1[i].matterData, {x: 3000, y: 800})
+                    let power: power = powerups1[i].power
+                    avatar.applyPower(power)
+                    Body.setPosition(powerups1[i].matterData, { x: 3000, y: 800 })
                 }
             }
         })
@@ -204,7 +207,7 @@ function gameLoop(delta: number) {
     //R allows the player to reset the avatar in case of death
     if (keys["82"]) {
         avatar.reset()
-        for (let i = 0; i < enemies1.length; i++){
+        for (let i = 0; i < enemies1.length; i++) {
             enemies1[i].reset()
         }
         for (let i = 0; i < powerups1.length; i++) {
@@ -247,7 +250,7 @@ for (let i = 0; i < cannons1.length; i++) {
 for (let i = 0; i < prEnemies1.length; i++) {
     setInterval(prEnemies1[i].emit, 1000)
 }
-    
+
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
 testtext.position.x = 950
