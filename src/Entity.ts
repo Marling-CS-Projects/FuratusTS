@@ -73,13 +73,13 @@ export class Avatar extends Entity {
     applyPower(powerAdded:power){
         console.log("applying power", powerAdded)
         this.power = powerAdded; //means the power is active
-        if (powerAdded = "shield"){
+        if (powerAdded === "shield"){
             setTimeout(this.removePower, 10000)
             
-        } else if (powerAdded = "dmgbuff"){
+        } else if (powerAdded === "dmgbuff"){
             this.damage = 3
             console.log("damage is up", avatar.damage)
-        } else if (powerAdded = "invincible"){
+        } else if (powerAdded === "invincible"){
             let targetHealth = avatar.health; //create a variable to check against if the health decreases
             if (avatar.health !== targetHealth) {//if the health decreases, 
                 avatar.health = targetHealth
