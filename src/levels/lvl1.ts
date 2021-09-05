@@ -34,10 +34,11 @@ let enemy2 = new Enemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(20
 export const enemies1:Enemy[] = [];
 enemies1.push( prEnemy1, enemy1, enemy2 )
 export const prEnemies1:ProjectileEnemy[] = [];
+prEnemies1.push(prEnemy1)
 //prEnemies1.push( prEnemy1)
 
 //powerups created for level 1
-let shield1 = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "dmgbuff", 1400, 205, false)
+let shield1 = new Powerup(PIXI.Sprite.from("assets/38shield.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "dmgbuff", 1400, 205, false)
 export const powerups1:Powerup[] = []
 powerups1.push(shield1)
 

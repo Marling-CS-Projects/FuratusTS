@@ -25,8 +25,12 @@ export let canvas = new PIXI.Application(
 
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
 
+//creates possible textures for the avatar to be stored in the class and switched between
+const avPosTextures: PIXI.Texture[] = [PIXI.Texture.from("assets/avatar.png"), PIXI.Texture.from("assets/avlow.png"), PIXI.Texture.from("assets/avdead.png"), PIXI.Texture.from("assets/avshield.png"), PIXI.Texture.from("assets/avdmgbuff.png")]
+
 //creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1, "none");
+export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1, "none", avPosTextures);
+
 
 
 //creates the alternative pixiData for a dead avatar outside of the player's view
@@ -102,7 +106,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                         enemies1[i].health = 0;
                     } else {
                         avatar.grounded = true;
-                        if (avatar.power != "shield") {
+                        if (avatar.power !== "shield") {
                             avatar.health -= 1;
                             console.log(avatar.health)
                         }    
@@ -114,7 +118,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                 if (collidingWith == powerups1[i].matterData) {
                     let power: power = powerups1[i].power
                     avatar.applyPower(power)
-                    Body.setPosition(powerups1[i].matterData, { x: 3000, y: 800 })
+                    Body.setPosition(powerups1[i].matterData, { x: 3000, y: 800 }) //moves the powerup out of view
                 }
             }
         })
@@ -235,6 +239,7 @@ function gameLoop(delta: number) {
 
     updateElapsed();
     Engine.update(engine, delta * 10)
+    // for testing console.log(avatar.power)
 }
 
 //array of all gameObjects. stored seperately to stop circular dependency error.

@@ -22,21 +22,18 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
     }
 }
 
-//creates textures for avatar death and reset
-let avliving = PIXI.Texture.from("assets/avatar.png")
-let avlow = PIXI.Texture.from("assets/avlow.png")
-let avdead = PIXI.Texture.from("assets/avdead.png")
-
 export type power = "shield" | "dmgbuff" | "invincible" | "none"
 export class Avatar extends Entity {
     grounded: boolean;
     damage:number;
     power:power;
-    constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX: number, spawnY: number, damage:number, power:power) {
+    posTextures:PIXI.Texture[]
+    constructor(pixiData: any, matterData: any, health: number, dead: boolean, grounded: boolean, spawnX: number, spawnY: number, damage:number, power:power, posTextures:PIXI.Texture[]) {
         super(pixiData, matterData, health, dead, spawnX, spawnY,)
         this.damage = damage;
         this.grounded = grounded;
         this.power = power;
+        this.posTextures = posTextures
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
@@ -44,7 +41,7 @@ export class Avatar extends Entity {
 
         if (this.health == 0) { //checks if the avatar is dead.
             this.dead = true
-            this.pixiData.texture = avdead
+            this.pixiData.texture = this.posTextures[2]
             deadmsg.x = avatar.pixiData.position.x;
             deadmsg.y = avatar.pixiData.position.y + 50
 
@@ -53,9 +50,9 @@ export class Avatar extends Entity {
         }
 
         if (this.health == 1){
-            this.pixiData.texture = avlow
-        } else if (this.health > 1) {
-            this.pixiData.texture = avliving
+            this.pixiData.texture = this.posTextures[1]
+        } else if (this.health > 1 && this.power == "none") {
+            this.pixiData.texture = this.posTextures[0]
         }
     }
 
@@ -63,7 +60,7 @@ export class Avatar extends Entity {
         this.health = 10
         this.dead = false
         this.grounded = true
-        this.pixiData.texture = avliving
+        this.pixiData.texture = this.posTextures[0]
         this.power = "none"
         deadmsg.x = 0
         deadmsg.y = 1200 //resets death sprites so they can't be seen.
@@ -72,13 +69,18 @@ export class Avatar extends Entity {
 
     applyPower(powerAdded:power){
         console.log("applying power", powerAdded)
-        this.power = powerAdded; //means the power is active
+        this.power = powerAdded; //means the power is active - used to prevent multiple powers simultaneously
         if (powerAdded === "shield"){
-            setTimeout(this.removePower, 10000)
+            this.pixiData.texture=this.posTextures[3]
+            console.log("shield added" + this.power)
+            setInterval(this.removePower, 10000)
+            //maybe try storing a variable in Bullet.ts that is updated when shield is called.
             
         } else if (powerAdded === "dmgbuff"){
+            this.pixiData.texture = this.posTextures[4]
             this.damage = 3
-            console.log("damage is up", avatar.damage)
+            console.log("damage is up", avatar.damage) //testing
+            
         } else if (powerAdded === "invincible"){
             let targetHealth = avatar.health; //create a variable to check against if the health decreases
             if (avatar.health !== targetHealth) {//if the health decreases, 
@@ -93,6 +95,7 @@ export class Avatar extends Entity {
     removePower(){
         this.power = "none"
         this.damage = 1
+        console.log("power removed", this.power)
     }
 }
 
@@ -165,13 +168,13 @@ export class ProjectileEnemy extends Enemy {
 
     emit() {
         if (this.inProx == true) {
-            console.log("prEnemy shooting")
+            //console.log("prEnemy shooting") testing
             if (this.direction == "left") {
-                console.log("left")
+                //console.log("left") testing
                 fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
             }
             if (this.direction == "right") {
-                console.log("right")
+                //console.log("right") testing
                 fire(true, false, this.matterData.position.x, this.matterData.position.y)
             }
         }

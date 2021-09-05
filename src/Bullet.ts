@@ -5,8 +5,6 @@ import * as PIXI from 'pixi.js'
 import { canvas, engine, avatar, bullets, gameObjectManager } from './index'
 import { Entity, Enemy } from "./Entity";
 
-
-
 export class Bullet extends GameObject { //creates a bullet class 
     speed: number;
     dead: boolean;
@@ -29,15 +27,15 @@ export class Bullet extends GameObject { //creates a bullet class
     hit(beingShotGameObject: GameObject) {
         console.log("Shot something") //testing
         if (beingShotGameObject instanceof Entity) { //only entities can have health removed
-            if (!(beingShotGameObject === avatar && this.firedByAvatar === true)) { //means the avatar cannot shoot itself
-                if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false))
-                if(this.firedByAvatar = true){
-                    beingShotGameObject.health -= avatar.damage
-                } else {
-                beingShotGameObject.health -= 1;
-                }
-                //console.log("it was an Entity")//testing
-                //console.log("The entity's health is " + beingShotGameObject.health)//testing
+            if (!(beingShotGameObject === avatar && this.firedByAvatar === true) && (avatar.power !== "shield")) { //avatar cannot shoot itself
+                if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false)) //enemies can't shoot each other
+                    if ((this.firedByAvatar === true)) {
+                        beingShotGameObject.health -= avatar.damage
+                    } else if (this.firedByAvatar === false) {
+                        beingShotGameObject.health -= 1;
+                    }
+                console.log("it was an Entity")//testing
+                console.log("The entity's health is " + beingShotGameObject.health)//testing
             }
         }
         this.dead = true;
@@ -56,7 +54,7 @@ export function createBullet(left: boolean, firedByAvatar: boolean, firedByX: nu
         x = firedByX + 40;
     }
 
-    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, firedByY, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar, );
+    let bullet = new Bullet(PIXI.Sprite.from("assets/bullet.png"), Bodies.rectangle(x, firedByY, 30, 20, { inertia: Infinity, isStatic: false }), -10, false, firedByAvatar,);
     if (left) {
         bullet.speed = 10;
 
