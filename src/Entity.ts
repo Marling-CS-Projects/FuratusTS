@@ -73,7 +73,7 @@ export class Avatar extends Entity {
         if (powerAdded === "shield"){
             this.pixiData.texture=this.posTextures[3]
             console.log("shield added" + this.power)
-            setInterval(this.removePower, 10000)
+            setInterval(this.removePower.bind(this), 10000)
             //maybe try storing a variable in Bullet.ts that is updated when shield is called.
             
         } else if (powerAdded === "dmgbuff"){
