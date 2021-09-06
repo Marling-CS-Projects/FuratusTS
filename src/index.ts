@@ -95,21 +95,27 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             //for spike collisions
             for (let i = 0; i < spikes1.length; i++) {
                 if (collidingWith == spikes1[i].matterData) {
+                    if(avatar.power == "invincible"){
+                        avatar.removePower()
+                    } else {
                     avatar.health = 0;
+                    }
                 }
             }
             //for enemy collisions
             for (let i = 0; i < enemies1.length; i++) { //only kills enemy if avatar jumps from above
                 if (collidingWith == enemies1[i].matterData) {
+                    avatar.grounded = true
                     if (avatar.matterData.position.y < enemies1[i].matterData.position.y) {
-                        avatar.grounded = true;
                         enemies1[i].health = 0;
                     } else {
-                        avatar.grounded = true;
-                        if (avatar.power !== "shield") {
+                        if(avatar.power == "invincible"){
+                            avatar.removePower()
+                        } else if (avatar.power !== ("shield" || "invincible")) {
                             avatar.health -= 1;
                             console.log(avatar.health)
-                        }    
+                        }   
+                         
                     }
                 }
             }

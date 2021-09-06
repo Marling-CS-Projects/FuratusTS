@@ -27,7 +27,9 @@ export class Bullet extends GameObject { //creates a bullet class
     hit(beingShotGameObject: GameObject) {
         console.log("Shot something") //testing
         if (beingShotGameObject instanceof Entity) { //only entities can have health removed
-            if (!(beingShotGameObject === avatar && this.firedByAvatar === true) && (avatar.power !== "shield")) { //avatar cannot shoot itself
+            if ((beingShotGameObject == avatar && avatar.power == "invincible")){
+                avatar.removePower()
+            } else if (!(beingShotGameObject === avatar && this.firedByAvatar === true) && (avatar.power !== "shield")) { //avatar cannot shoot itself
                 if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false)) //enemies can't shoot each other
                     if ((this.firedByAvatar === true)) {
                         beingShotGameObject.health -= avatar.damage
@@ -37,6 +39,7 @@ export class Bullet extends GameObject { //creates a bullet class
                 console.log("it was an Entity")//testing
                 console.log("The entity's health is " + beingShotGameObject.health)//testing
             }
+            
         }
         this.dead = true;
     }

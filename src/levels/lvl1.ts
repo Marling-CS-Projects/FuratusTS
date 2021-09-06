@@ -18,7 +18,7 @@ platforms1.push(platform,platform1,platform2)
 let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
 let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(475, 310, 117, 39, {isStatic: true }));
 const spikes1: Spike[] = [];
-//spikes1.push( trispike)
+spikes1.push( trispike)
 
 //cannons created for level 1
 let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(40, 300, 60,30, {isStatic:true}), "right")
@@ -38,7 +38,7 @@ prEnemies1.push(prEnemy1)
 //prEnemies1.push( prEnemy1)
 
 //powerups created for level 1
-let shield1 = new Powerup(PIXI.Sprite.from("assets/38shield.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "shield", 1400, 205, false)
+let shield1 = new Powerup(PIXI.Sprite.from("assets/38shield.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "invincible", 1400, 205, false)
 export const powerups1:Powerup[] = []
 powerups1.push(shield1)
 

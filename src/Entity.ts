@@ -79,11 +79,11 @@ export class Avatar extends Entity {
         } else if (powerAdded === "dmgbuff"){
             this.pixiData.texture = this.posTextures[4]
             this.damage = 3
-            console.log("damage is up", avatar.damage) //testing
             
         } else if (powerAdded === "invincible"){
-            let targetHealth = avatar.health; //create a variable to check against if the health decreases
+            const targetHealth = avatar.health; //create a variable to check against if the health decreases
             if (avatar.health !== targetHealth) {//if the health decreases, 
+                console.log("you were hit and saved", avatar.health )
                 avatar.health = targetHealth
                 this.removePower() 
             }
@@ -91,7 +91,7 @@ export class Avatar extends Entity {
         }
 
     }
-
+    
     removePower(){
         this.power = "none"
         this.damage = 1
