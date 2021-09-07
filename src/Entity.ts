@@ -79,15 +79,10 @@ export class Avatar extends Entity {
         } else if (powerAdded === "dmgbuff"){
             this.pixiData.texture = this.posTextures[4]
             this.damage = 3
+            setInterval(this.removePower.bind(this), 20000) // buff is removed after 20 secs
             
         } else if (powerAdded === "invincible"){
-            const targetHealth = avatar.health; //create a variable to check against if the health decreases
-            if (avatar.health !== targetHealth) {//if the health decreases, 
-                console.log("you were hit and saved", avatar.health )
-                avatar.health = targetHealth
-                this.removePower() 
-            }
-
+            this.pixiData.texture = this.posTextures[5]
         }
 
     }
