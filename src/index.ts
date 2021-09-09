@@ -25,13 +25,8 @@ export let canvas = new PIXI.Application(
 
 export let bullets: Bullet[] = []; //create an empty array to store bullets in
 
-//creates possible textures for the avatar to be stored in the class and switched between
-const avPosTextures: PIXI.Texture[] = [PIXI.Texture.from("assets/avatar.png"), PIXI.Texture.from("assets/avlow.png"), PIXI.Texture.from("assets/avdead.png"), PIXI.Texture.from("assets/avshield.png"), PIXI.Texture.from("assets/avdmgbuff.png"), PIXI.Texture.from("assets/avinvincible.png")]
-
-//creates an avatar for the player that has both matter and pixi properties and health.
-export let avatar = new Avatar(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, true, 300, 300, 1, "none", avPosTextures);
-
-
+//creates an avatar for the player
+export let avatar = new Avatar()
 
 //creates the alternative pixiData for a dead avatar outside of the player's view
 export let deadmsg = PIXI.Sprite.from("assets/youdied.png")
