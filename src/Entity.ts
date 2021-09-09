@@ -2,13 +2,10 @@ import { GameObject } from './GameObject'
 import { avatar, deadmsg } from './index'
 import { Body } from 'matter-js';
 import { fire } from './Bullet'
-import * as PIXI from 'pixi.js' 
+import * as PIXI from 'pixi.js'
 import { Bodies } from "matter-js"
 import { Powerup } from './Powerups';
 import { Sprite } from 'pixi.js';
-
-
-
 
 export abstract class Entity extends GameObject { //for all 'living' objects in the game.
     health: number;
@@ -26,10 +23,10 @@ export abstract class Entity extends GameObject { //for all 'living' objects in 
 
 export type power = "shield" | "dmgbuff" | "invincible" | "none"
 export class Avatar extends Entity {
-    damage:number;
+    damage: number;
     grounded: boolean;
-    power:power;
-    posTextures:PIXI.Texture[]
+    power: power;
+    posTextures: PIXI.Texture[]
     constructor() {
         super(PIXI.Sprite.from("assets/avatar.png"), Bodies.rectangle(300, 300, 60, 60, { inertia: Infinity, timeScale: 2 }), 5, false, 300, 300)
         this.damage = 1
@@ -51,7 +48,7 @@ export class Avatar extends Entity {
             this.dead = false
         }
 
-        if (this.health == 1){
+        if (this.health == 1) {
             this.pixiData.texture = this.posTextures[1]
         } else if (this.health > 1 && this.power == "none") {
             this.pixiData.texture = this.posTextures[0]
@@ -69,39 +66,39 @@ export class Avatar extends Entity {
         Body.setPosition(avatar.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
     }
 
-    applyPower(powerAdded:power){
+    applyPower(powerAdded: power) {
         console.log("applying power", powerAdded)
         this.power = powerAdded; //means the power is active - used to prevent multiple powers simultaneously
-        if (powerAdded === "shield"){
-            this.pixiData.texture=this.posTextures[3]
+        if (powerAdded === "shield") {
+            this.pixiData.texture = this.posTextures[3]
             console.log("shield added" + this.power)
             setInterval(this.removePower.bind(this), 10000)
             //maybe try storing a variable in Bullet.ts that is updated when shield is called.
-            
-        } else if (powerAdded === "dmgbuff"){
+
+        } else if (powerAdded === "dmgbuff") {
             this.pixiData.texture = this.posTextures[4]
             this.damage = 3
             setInterval(this.removePower.bind(this), 20000) // buff is removed after 20 secs
-            
-        } else if (powerAdded === "invincible"){
+
+        } else if (powerAdded === "invincible") {
             this.pixiData.texture = this.posTextures[5]
         }
 
     }
-    
-    removePower(){
+
+    removePower() {
         this.power = "none"
         this.damage = 1
         console.log("power removed", this.power)
     }
 }
 
-export class 
-Enemy extends Entity {
-    inProx:boolean;
-    inFiringProx:boolean;
-    direction:direction
-    constructor( pixiData:any, matterData: any, dead: boolean, spawnX: number, spawnY: number) {
+export class
+    Enemy extends Entity {
+    inProx: boolean;
+    inFiringProx: boolean;
+    direction: direction
+    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number) {
         super(pixiData, matterData, 3, dead, spawnX, spawnY)
         this.spawnX = spawnX;
         this.spawnY = spawnY;
@@ -140,9 +137,9 @@ Enemy extends Entity {
         }
         let b = avatar.matterData.position.y - this.matterData.position.y
         let c = Math.sqrt(((a ^ 2) + (b ^ 2))) //a squared plus b squared equals c squared
-        if (c < 27) {
+        if (c < 22) {
             this.inProx = true;
-        }  else if (c > 27) {
+        } else if (c > 22) {
             this.inProx = false
         }
         if (c < 22) { //arbitrary number I picked that seemed good
@@ -150,15 +147,17 @@ Enemy extends Entity {
         } else if (c > 22) {
             this.inFiringProx = false;
         }
-        
+
     }
 
     approachAvatar() {
         if ((this.inProx == true)) {
-            if (this.direction == "right") {
-                Body.setVelocity(this.matterData, {x: 2, y:this.matterData.velocity.y})
-            } else if (this.direction == "left") {
-                Body.setVelocity(this.matterData, {x: -2, y:this.matterData.velocity.y})
+            if ((avatar.matterData.position.y <= this.matterData.position.y) && (this.matterData.position.y + 15  > avatar.matterData.position.y )) {
+                if (this.direction == "right") {
+                    Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
+                } else if (this.direction == "left") {
+                    Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
+                }
             }
         }
     }
@@ -177,7 +176,7 @@ Enemy extends Entity {
 type direction = "left" | "right" | "none"; //creates a type union for direction that only allows left, right or up to be inputted.
 
 export class ProjectileEnemy extends Enemy {
-    constructor(pixiData:any, matterData: any, dead:boolean, spawnX: number, spawnY: number) {
+    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number) {
         super(pixiData, matterData, dead, spawnX, spawnY,)
         this.health = 3
         this.dead = false
@@ -189,14 +188,16 @@ export class ProjectileEnemy extends Enemy {
 
     emit() {
         if (this.inFiringProx == true) {
-            //console.log("prEnemy shooting") testing
-            if (this.direction == "left") {
-                //console.log("left") testing
-                fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
-            }
-            if (this.direction == "right") {
-                //console.log("right") testing
-                fire(true, false, this.matterData.position.x, this.matterData.position.y)
+            if ((avatar.matterData.position.y >= this.matterData.position.y) && ((this.matterData.position.y < (avatar.matterData.position.y + 15)))) {
+                //console.log("prEnemy shooting") testing
+                if (this.direction == "left") {
+                    //console.log("left") testing
+                    fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
+                }
+                if (this.direction == "right") {
+                    //console.log("right") testing
+                    fire(true, false, this.matterData.position.x, this.matterData.position.y)
+                }
             }
         }
     }
