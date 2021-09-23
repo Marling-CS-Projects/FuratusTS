@@ -1,0 +1,3 @@
+console.log("not at the edge")
+                    let diff = this.matterData.position.y - avatar.matterData.position.y;
+                    if (diff > 0 && diff < 15) { //not working perfectly. detects that it's above but doesn't contain range

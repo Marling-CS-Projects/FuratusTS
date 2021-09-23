@@ -94,18 +94,16 @@ export class Avatar extends Entity {
     }
 }
 
-export class
-    Enemy extends Entity {
+export class Enemy extends Entity {
     inProx: boolean;
     inFiringProx: boolean;
     direction: direction
     platform: Platform
     atEdge: boolean
-    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number, platform: Platform) {
-        super(pixiData, matterData, 3, dead, spawnX, spawnY)
+    constructor(pixiData: any, matterData: any, spawnX: number, spawnY: number, platform: Platform) {
+        super(pixiData, matterData, 3, false, spawnX, spawnY)
         this.spawnX = spawnX;
         this.spawnY = spawnY;
-        this.dead = false;
         this.inProx = false;
         this.direction = "none";
         this.platform = platform;
@@ -204,11 +202,9 @@ export class
 type direction = "left" | "right" | "none"; //creates a type union for direction that only allows left, right or up to be inputted.
 
 export class ProjectileEnemy extends Enemy {
-    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number, platform: Platform) {
-        super(pixiData, matterData, dead, spawnX, spawnY, platform)
-        this.atEdge = false;
+    constructor(matterData: any, spawnX: number, spawnY: number, platform: Platform) {
+        super(PIXI.Sprite.from("assets/projectile.png"), matterData, spawnX, spawnY, platform)
         this.health = 3
-        this.dead = false
         this.direction = "none"
         this.inProx = false;
 
