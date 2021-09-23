@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js'
 import { Bodies } from "matter-js"
 import { Powerup } from './Powerups';
 import { Sprite } from 'pixi.js';
+import { Platform } from './Walls';
 
 export abstract class Entity extends GameObject { //for all 'living' objects in the game.
     health: number;
@@ -98,13 +99,16 @@ export class
     inProx: boolean;
     inFiringProx: boolean;
     direction: direction
-    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number) {
+    platform: Platform
+    atEdge: boolean
+    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number, platform: Platform) {
         super(pixiData, matterData, 3, dead, spawnX, spawnY)
         this.spawnX = spawnX;
         this.spawnY = spawnY;
         this.dead = false;
         this.inProx = false;
         this.direction = "none";
+        this.platform = platform;
     }
 
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
@@ -129,34 +133,58 @@ export class
 
     avatarProx() { //used to find how close the avatar is to the entity.
         //uses pythagoras to calculate distance between the avatar and the enemy
-        let a: number;
-        if (avatar.matterData.position.x > this.matterData.position.x) { //prevents having a negative a value
-            a = avatar.matterData.position.x - this.matterData.position.x
-        } else {
-            a = this.matterData.position.x - avatar.matterData.position.x
-        }
-        let b = avatar.matterData.position.y - this.matterData.position.y
-        let c = Math.sqrt(((a ^ 2) + (b ^ 2))) //a squared plus b squared equals c squared
+        let c = (this.pythag(avatar.matterData.position.x, this.matterData.position.x, avatar.matterData.position.y, this.matterData.position.y))
         if (c < 22) {
+            console.log("in range")
             this.inProx = true;
+            this.inFiringProx = true;
         } else if (c > 22) {
             this.inProx = false
+            this.inFiringProx = false
         }
-        if (c < 22) { //arbitrary number I picked that seemed good
-            this.inFiringProx = true
-        } else if (c > 22) {
-            this.inFiringProx = false;
+    }
+    pythag(item1X: number, item2X: number, item1Y: number, item2Y: number) {
+        let a: number;
+        if (item1X > item2X) { //prevents having a negative a value
+            a = item1X - item2X
+        } else {
+            a = item2X - item1X
         }
+        let b: number = item1Y - item2Y
+        let c = Math.sqrt(((a ^ 2) + (b ^ 2))) //a squared plus b squared equals c squared
+        return c
+    }
 
+    nearEdge() {
+        let xpos;
+        if (this.direction == "left"){
+            xpos = this.matterData.position.x -3
+        } else if (this.direction == "right"){
+            xpos = this.matterData.position.x +3
+        }
+        let c: number = this.pythag(this.platform.matterData.position.x, xpos, this.platform.matterData.position.y, this.matterData.position.y)
+        if (c > 18){
+            console.log(c)
+            return true
+        } else {
+            return false
+        }
     }
 
     approachAvatar() {
         if ((this.inProx == true)) {
-            if ((avatar.matterData.position.y <= this.matterData.position.y) && (this.matterData.position.y + 15  > avatar.matterData.position.y )) {
-                if (this.direction == "right") {
+            console.log("inprox")
+            if (this.direction == "right") {
+                if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
-                } else if (this.direction == "left") {
+                } else {
+                    console.log("at edge")
+                }
+            } else if (this.direction == "left") {
+                if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
+                } else {
+                    console.log("swag")
                 }
             }
         }
@@ -176,8 +204,9 @@ export class
 type direction = "left" | "right" | "none"; //creates a type union for direction that only allows left, right or up to be inputted.
 
 export class ProjectileEnemy extends Enemy {
-    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number) {
-        super(pixiData, matterData, dead, spawnX, spawnY,)
+    constructor(pixiData: any, matterData: any, dead: boolean, spawnX: number, spawnY: number, platform: Platform) {
+        super(pixiData, matterData, dead, spawnX, spawnY, platform)
+        this.atEdge = false;
         this.health = 3
         this.dead = false
         this.direction = "none"
