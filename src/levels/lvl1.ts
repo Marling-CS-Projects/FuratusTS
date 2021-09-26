@@ -6,6 +6,7 @@ import { Spike, Cannon } from '../Obstacles'
 import { GameObject } from '../GameObject';
 import {Enemy, ProjectileEnemy} from '../Entity'
 import { Powerup} from '../Powerups'
+import {Level} from "./Level"
 
 //platforms created for level 1
 let platform = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
@@ -14,12 +15,6 @@ let platform2= new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectan
 const platforms1: Platform[] = [];
 platforms1.push(platform,platform1,platform2)
 
-//spikes created for level 1
-let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
-let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(475, 310, 117, 39, {isStatic: true }));
-const spikes1: Spike[] = [];
-spikes1.push( trispike)
-
 //cannons created for level 1
 let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(40, 300, 60,30, {isStatic:true}), "right")
 let leftcannon = new Cannon(PIXI.Sprite.from("assets/leftcannon.png"), Bodies.rectangle(1700, 200,60,30, {isStatic:true}), "left")
@@ -27,30 +22,31 @@ let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.re
 const cannons1: Cannon[]= [];
 cannons1.push( )
 
+//spikes created for level 1
+let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
+let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(475, 310, 117, 39, {isStatic: true }));
+const spikes1: Spike[] = [];
+spikes1.push( trispike)
+
+
 //enemies created for level 1
 let prEnemy1 = new ProjectileEnemy(Bodies.rectangle(1500, 200, 60, 60, { inertia: Infinity }), 1500, 200, platform2)
 let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(700, 300, 60, 60, { inertia: Infinity }), 700, 300, platform)
 let enemy2 = new Enemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 200, 300,platform)
-export const enemies1:Enemy[] = [];
+const enemies1:Enemy[] = [];
 enemies1.push( prEnemy1)
-export const prEnemies1:ProjectileEnemy[] = [];
+const prEnemies1:ProjectileEnemy[] = [];
 prEnemies1.push(prEnemy1)
 //prEnemies1.push( prEnemy1)
 
 //powerups created for level 1
 let shield1 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "shield", 1400, 205, false)
-export const powerups1:Powerup[] = []
+const powerups1:Powerup[] = []
 powerups1.push(shield1)
-
-
-//creates an array to store all of lvl1 in for level swithching
-const lvl1map:GameObject[] = [];
-lvl1map.push(...platforms1, ...spikes1, ...cannons1, ...enemies1, ...powerups1) 
-
 
 //for drawing:
 //platforms are drawn from centre.
 //cannons should be drawn -40. spikes -30
 //shields are 38x50
 
-export { lvl1map, platforms1, cannons1, spikes1}
+export const lvl1 = new Level(platforms1,cannons1, spikes1, enemies1, prEnemies1, powerups1, 300, 300)

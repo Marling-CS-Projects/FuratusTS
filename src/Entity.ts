@@ -171,7 +171,6 @@ export class Enemy extends Entity {
 
     approachAvatar() {
         if ((this.inProx == true)) {
-            console.log("inprox")
             if (this.direction == "right") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
@@ -182,18 +181,20 @@ export class Enemy extends Entity {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
                 } else {
-                    console.log("swag")
+                    console.log("at edge")
                 }
             }
         }
     }
 
     reset() {
+        console.log("I have been reset")
         this.health = 3;
         this.direction = "none"
         this.inProx = false;
         this.dead = false;
         Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY })
+        console.log(this.matterData.position.x, this.matterData.position.y)
         this.pixiData.position.x = this.spawnX
         this.pixiData.position.y = this.spawnY
     }

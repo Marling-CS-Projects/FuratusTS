@@ -1,18 +1,22 @@
 //import { updateBullets, fire } from './Bullets'
 import { Avatar, power } from './Entity'
 import * as PIXI from 'pixi.js'
-import { cannons1, lvl1map, platforms1, spikes1, enemies1, prEnemies1, powerups1 } from './levels/lvl1'
+import { Level } from './levels/Level'
 import { Bullet, fire } from './Bullet'
 import { Powerup } from './Powerups'
 import { Engine, Body, World, Bodies } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
+import { lvl1 } from './levels/lvl1'
 
-export var powerActive: boolean = false; //for powerups
-
-
+//creates variables to be used in the rest of the game
 export const engine = Engine.create();
-const loader = PIXI.Loader
+export let bullets: Bullet[] = []; 
+export const avatar = new Avatar()//creates an avatar for the player
+export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
+deadmsg.x = 0
+deadmsg.y = 1395
+let selectedLevel = lvl1 //for switching between levels
 
 //draws a new stage
 export let canvas = new PIXI.Application(
@@ -23,31 +27,27 @@ export let canvas = new PIXI.Application(
     }
 );
 
-export let bullets: Bullet[] = []; //create an empty array to store bullets in
-
-//creates an avatar for the player
-export let avatar = new Avatar()
-
-//creates the alternative pixiData for a dead avatar outside of the player's view
-export let deadmsg = PIXI.Sprite.from("assets/youdied.png")
-deadmsg.x = 0
-deadmsg.y = 1395
-
 canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
+export function loadMap(map:Level) { //called by menus to start the game when button is pressed
+    //adds player and level matterData to the engine so that they work with physics.
+    World.add(engine.world, [avatar.matterData]);
+    for (let i = 0; i < map.map.length; i++) { 
+        World.add(engine.world, [map.map[i].matterData])
+    }
+    //adds the pixiData of objects to the stage so they are shown.
+    canvas.stage.addChild(avatar.pixiData, deadmsg);
+    for (let i = 0; i < map.map.length; i++) { 
+        canvas.stage.addChild(map.map[i].pixiData)
+    }
 
-//adds player and level matterData to the engine so that they work with physics.
-World.add(engine.world, [avatar.matterData]);
-for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the engine
-    World.add(engine.world, [lvl1map[i].matterData])
+    //sets avatar's position to the start of the level 
+    avatar.matterData.position.x = selectedLevel.avSpawnX; 
+    avatar.matterData.position.y = selectedLevel.avSpawnY;
 }
-//adds the pixiData of objects to the stage so they are shown.
-canvas.stage.addChild(avatar.pixiData, deadmsg);
-for (let i = 0; i < lvl1map.length; i++) { //adds every platform to the stage
-    canvas.stage.addChild(lvl1map[i].pixiData)
-}
+loadMap(selectedLevel)
 
 
 //keyboard event handlers
@@ -74,52 +74,52 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
         .forEach(pair => {
             let collidingWith = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
             //for ground collisions
-            for (let i = 0; i < platforms1.length; i++) {
-                if (collidingWith == platforms1[i].matterData) { //if they are colliding, then the player is on the ground.
+            for (let i = 0; i < selectedLevel.platforms.length; i++) {
+                if (collidingWith == selectedLevel.platforms[i].matterData) { //if they are colliding, then the player is on the ground.
                     avatar.grounded = true;
                 }
             }
             //for cannon collisions
-            for (let i = 0; i < cannons1.length; i++) {
-                if (collidingWith == cannons1[i].matterData) {
-                    if ((cannons1[i].matterData.position.x - 25 < avatar.matterData.position.x) || (avatar.matterData.position.x < cannons1[i].matterData.position.x + 25)) {
+            for (let i = 0; i < selectedLevel.cannons.length; i++) {
+                if (collidingWith == selectedLevel.cannons[i].matterData) {
+                    if ((selectedLevel.cannons[i].matterData.position.x - 25 < avatar.matterData.position.x) || (avatar.matterData.position.x < selectedLevel.cannons[i].matterData.position.x + 25)) {
                         avatar.grounded = true;
                     }
                 }
             }
             //for spike collisions
-            for (let i = 0; i < spikes1.length; i++) {
-                if (collidingWith == spikes1[i].matterData) {
-                    if(avatar.power == "invincible"){
+            for (let i = 0; i < selectedLevel.spikes.length; i++) {
+                if (collidingWith == selectedLevel.spikes[i].matterData) {
+                    if (avatar.power == "invincible") {
                         avatar.removePower()
                     } else {
-                    avatar.health = 0;
+                        avatar.health = 0;
                     }
                 }
             }
             //for enemy collisions
-            for (let i = 0; i < enemies1.length; i++) { //only kills enemy if avatar jumps from above
-                if (collidingWith == enemies1[i].matterData) {
+            for (let i = 0; i < selectedLevel.enemies.length; i++) { //only kills enemy if avatar jumps from above
+                if (collidingWith == selectedLevel.enemies[i].matterData) {
                     avatar.grounded = true
-                    if (avatar.matterData.position.y < enemies1[i].matterData.position.y) {
-                        enemies1[i].health = 0;
+                    if (avatar.matterData.position.y < selectedLevel.enemies[i].matterData.position.y) {
+                        selectedLevel.enemies[i].health = 0;
                     } else {
-                        if(avatar.power == "invincible"){
+                        if (avatar.power == "invincible") {
                             avatar.removePower()
                         } else if (avatar.power !== ("shield" || "invincible")) {
                             avatar.health -= 1;
                             console.log(avatar.health)
-                        }   
-                         
+                        }
+
                     }
                 }
             }
             //for powerup collisions
-            for (let i = 0; i < powerups1.length; i++) {
-                if (collidingWith == powerups1[i].matterData) {
-                    let power: power = powerups1[i].power
+            for (let i = 0; i < selectedLevel.powerups.length; i++) {
+                if (collidingWith == selectedLevel.powerups[i].matterData) {
+                    let power: power = selectedLevel.powerups[i].power
                     avatar.applyPower(power)
-                    Body.setPosition(powerups1[i].matterData, { x: 3000, y: 800 }) //moves the powerup out of view
+                    Body.setPosition(selectedLevel.powerups[i].matterData, { x: 3000, y: 800 }) //moves the powerup out of view
                 }
             }
         })
@@ -148,21 +148,21 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
         .filter(pair => pair.bodyA == avatar.matterData || pair.bodyB == avatar.matterData)
         .forEach(pair => {
             let possibleGrounding = pair.bodyA == avatar.matterData ? pair.bodyB : pair.bodyA;
-            for (let i = 0; i < platforms1.length; i++) {
-                if (possibleGrounding == platforms1[i].matterData) {
+            for (let i = 0; i < selectedLevel.platforms.length; i++) {
+                if (possibleGrounding == selectedLevel.platforms[i].matterData) {
                     avatar.grounded = false; //when the collision ends, the player is no longer grounded
                 }
             }
-            for (let i = 0; i < enemies1.length; i++) {
-                if (possibleGrounding == enemies1[i].matterData) {
-                    if (avatar.matterData.position.y < enemies1[i].matterData.position.y) {
+            for (let i = 0; i < selectedLevel.enemies.length; i++) {
+                if (possibleGrounding == selectedLevel.enemies[i].matterData) {
+                    if (avatar.matterData.position.y < selectedLevel.enemies[i].matterData.position.y) {
                         avatar.grounded = false;
                     }
                 }
             }
-            for (let i = 0; i < cannons1.length; i++) {
-                if (possibleGrounding == cannons1[i].matterData) {
-                    if ((cannons1[i].matterData.position.x - 30 < avatar.matterData.position.x) || (avatar.matterData.position.x < cannons1[i].matterData.position.x + 30)) {
+            for (let i = 0; i < selectedLevel.cannons.length; i++) {
+                if (possibleGrounding == selectedLevel.cannons[i].matterData) {
+                    if ((selectedLevel.cannons[i].matterData.position.x - 30 < avatar.matterData.position.x) || (avatar.matterData.position.x < selectedLevel.cannons[i].matterData.position.x + 30)) {
                         avatar.grounded = false;
                     }
                 }
@@ -212,11 +212,11 @@ function gameLoop(delta: number) {
     //R allows the player to reset the avatar in case of death
     if (keys["82"]) {
         avatar.reset()
-        for (let i = 0; i < enemies1.length; i++) {
-            enemies1[i].reset()
+        for (let i = 0; i < selectedLevel.enemies.length; i++) {
+            selectedLevel.projectileEnemies[i].reset()
         }
-        for (let i = 0; i < powerups1.length; i++) {
-            powerups1[i].reset()
+        for (let i = 0; i < selectedLevel.powerups.length; i++) {
+            selectedLevel.powerups[i].reset()
         }
         for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
             bullets[i].dead = true;
@@ -234,8 +234,8 @@ function gameLoop(delta: number) {
 
     avatar.update(delta)
     bullets.forEach((bullet: Bullet) => bullet.update(delta))
-    for (let i = 0; i < lvl1map.length; i++) {
-        lvl1map[i].update(delta)
+    for (let i = 0; i < selectedLevel.map.length; i++) {
+        selectedLevel.map[i].update(delta)
     }
 
     updateElapsed();
@@ -245,16 +245,16 @@ function gameLoop(delta: number) {
 
 //array of all gameObjects. stored seperately to stop circular dependency error.
 export let gameObjectManager: GameObject[] = [];
-gameObjectManager.push(avatar, ...lvl1map,)
+gameObjectManager.push(avatar, ...selectedLevel.map,)
 
 //fires cannons every 3 seconds
-for (let i = 0; i < cannons1.length; i++) {
-    setInterval(cannons1[i].emit, 3000)
+for (let i = 0; i < selectedLevel.cannons.length; i++) {
+    setInterval(selectedLevel.cannons[i].emit, 3000)
 }
 
 //projectile enemies fire if avatar is in proximity to them
-for (let i = 0; i < prEnemies1.length; i++) {
-    setInterval(prEnemies1[i].emit, 1000)
+for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
+    setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
 }
 
 /*let testtext = new PIXI.Text('test')
