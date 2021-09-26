@@ -11,7 +11,7 @@ import { lvl1 } from './levels/lvl1'
 
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
-export let bullets: Bullet[] = []; 
+export let bullets: Bullet[] = [];
 export const avatar = new Avatar()//creates an avatar for the player
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
 deadmsg.x = 0
@@ -31,20 +31,20 @@ canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
-export function loadMap(map:Level) { //called by menus to start the game when button is pressed
+export function loadMap(map: Level) { //called by menus to start the game when button is pressed
     //adds player and level matterData to the engine so that they work with physics.
     World.add(engine.world, [avatar.matterData]);
-    for (let i = 0; i < map.map.length; i++) { 
+    for (let i = 0; i < map.map.length; i++) {
         World.add(engine.world, [map.map[i].matterData])
     }
     //adds the pixiData of objects to the stage so they are shown.
     canvas.stage.addChild(avatar.pixiData, deadmsg);
-    for (let i = 0; i < map.map.length; i++) { 
+    for (let i = 0; i < map.map.length; i++) {
         canvas.stage.addChild(map.map[i].pixiData)
     }
 
     //sets avatar's position to the start of the level 
-    avatar.matterData.position.x = selectedLevel.avSpawnX; 
+    avatar.matterData.position.x = selectedLevel.avSpawnX;
     avatar.matterData.position.y = selectedLevel.avSpawnY;
 }
 loadMap(selectedLevel)
@@ -101,7 +101,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             for (let i = 0; i < selectedLevel.enemies.length; i++) { //only kills enemy if avatar jumps from above
                 if (collidingWith == selectedLevel.enemies[i].matterData) {
                     avatar.grounded = true
-                    if (avatar.matterData.position.y < selectedLevel.enemies[i].matterData.position.y) {
+                    if (avatar.matterData.position.y + 10 < selectedLevel.enemies[i].matterData.position.y) {
                         selectedLevel.enemies[i].health = 0;
                     } else {
                         if (avatar.power == "invincible") {
@@ -213,6 +213,9 @@ function gameLoop(delta: number) {
     if (keys["82"]) {
         avatar.reset()
         for (let i = 0; i < selectedLevel.enemies.length; i++) {
+            selectedLevel.enemies[i].reset()
+        }
+        for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
             selectedLevel.projectileEnemies[i].reset()
         }
         for (let i = 0; i < selectedLevel.powerups.length; i++) {

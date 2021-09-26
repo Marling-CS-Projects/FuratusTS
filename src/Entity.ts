@@ -39,7 +39,7 @@ export class Avatar extends Entity {
     update(delta: number) { //overrode the method from the superclass, which allows me to add to the update function
         super.update(delta);
 
-        if (this.health == 0) { //checks if the avatar is dead.
+        if (this.health <= 0) { //checks if the avatar is dead.
             this.dead = true
             this.pixiData.texture = this.posTextures[2]
             deadmsg.x = avatar.pixiData.position.x;
@@ -115,7 +115,7 @@ export class Enemy extends Entity {
         this.approachAvatar()
         this.detectDirection()
 
-        if (this.health == 0) { //checks if the enemy is dead.
+        if (this.health <= 0) { //checks if the enemy is dead.
             this.dead = true
             this.matterData.position.y = 800;
         }
@@ -133,7 +133,7 @@ export class Enemy extends Entity {
         //uses pythagoras to calculate distance between the avatar and the enemy
         let c = (this.pythag(avatar.matterData.position.x, this.matterData.position.x, avatar.matterData.position.y, this.matterData.position.y))
         if (c < 22) {
-            console.log("in range")
+            //console.log("in range")
             this.inProx = true;
             this.inFiringProx = true;
         } else if (c > 22) {
@@ -162,7 +162,6 @@ export class Enemy extends Entity {
         }
         let c: number = this.pythag(this.platform.matterData.position.x, xpos, this.platform.matterData.position.y, this.matterData.position.y)
         if (c > 18){
-            console.log(c)
             return true
         } else {
             return false
@@ -175,13 +174,13 @@ export class Enemy extends Entity {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
                 } else {
-                    console.log("at edge")
+                    //console.log("at edge")
                 }
             } else if (this.direction == "left") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
                 } else {
-                    console.log("at edge")
+                 //   console.log("at edge")
                 }
             }
         }
@@ -194,9 +193,9 @@ export class Enemy extends Entity {
         this.inProx = false;
         this.dead = false;
         Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY })
-        console.log(this.matterData.position.x, this.matterData.position.y)
         this.pixiData.position.x = this.spawnX
         this.pixiData.position.y = this.spawnY
+        console.log(this.matterData.position.x, this.matterData.position.y, this.pixiData.position.x, this.pixiData.position.y)
     }
 }
 
@@ -214,17 +213,12 @@ export class ProjectileEnemy extends Enemy {
 
     emit() {
         if (this.inFiringProx == true) {
-            if ((avatar.matterData.position.y >= this.matterData.position.y) && ((this.matterData.position.y < (avatar.matterData.position.y + 15)))) {
-                //console.log("prEnemy shooting") testing
                 if (this.direction == "left") {
-                    //console.log("left") testing
                     fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
                 }
                 if (this.direction == "right") {
-                    //console.log("right") testing
                     fire(true, false, this.matterData.position.x, this.matterData.position.y)
                 }
-            }
         }
     }
 }

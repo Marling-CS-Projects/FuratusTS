@@ -2,6 +2,9 @@ console.log("not at the edge")
                     let diff = this.matterData.position.y - avatar.matterData.position.y;
                     if (diff > 0 && diff < 15) { //not working perfectly. detects that it's above but doesn't contain range
 
+
+----------------------------------------
+
 import $ from "jquery"
 import {loadMap} from "./index"
 import { lvl1 } from "./levels/lvl1";
@@ -31,3 +34,7 @@ export function createStartMenu() {
 export function closeMenu() { //clears container, effectively closing the menu
     $(menuContainer).html('');
 }
+
+-----------------------
+
+if ((avatar.matterData.position.y <= this.matterData.position.y) && ((this.matterData.position.y < (avatar.matterData.position.y + 15)))) {

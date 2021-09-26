@@ -1,9 +1,7 @@
 import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js';
 import { Bodies } from 'matter-js';
 import { Platform, Wall} from '../Walls'
 import { Spike, Cannon } from '../Obstacles'
-import { GameObject } from '../GameObject';
 import {Enemy, ProjectileEnemy} from '../Entity'
 import { Powerup} from '../Powerups'
 import {Level} from "./Level"
@@ -26,15 +24,15 @@ cannons1.push( )
 let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
 let trispike = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(475, 310, 117, 39, {isStatic: true }));
 const spikes1: Spike[] = [];
-spikes1.push( trispike)
+spikes1.push( )
 
 
 //enemies created for level 1
 let prEnemy1 = new ProjectileEnemy(Bodies.rectangle(1500, 200, 60, 60, { inertia: Infinity }), 1500, 200, platform2)
-let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(700, 300, 60, 60, { inertia: Infinity }), 700, 300, platform)
+let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(650, 300, 60, 60, { inertia: Infinity }), 700, 300, platform)
 let enemy2 = new Enemy(PIXI.Sprite.from("assets/enemy.png"), Bodies.rectangle(200, 300, 60, 60, { inertia: Infinity }), 200, 300,platform)
 const enemies1:Enemy[] = [];
-enemies1.push( prEnemy1)
+enemies1.push(prEnemy1)
 const prEnemies1:ProjectileEnemy[] = [];
 prEnemies1.push(prEnemy1)
 //prEnemies1.push( prEnemy1)
@@ -42,7 +40,7 @@ prEnemies1.push(prEnemy1)
 //powerups created for level 1
 let shield1 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "shield", 1400, 205, false)
 const powerups1:Powerup[] = []
-powerups1.push(shield1)
+powerups1.push()
 
 //for drawing:
 //platforms are drawn from centre.
