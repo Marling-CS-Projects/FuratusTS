@@ -20,7 +20,7 @@ export class Level {
         this.enemies = enemies;
         this.projectileEnemies = projectileEnemies;
         this.powerups = powerups;
-        this.map = [...platforms, ...cannons, ...spikes, ...enemies, ...projectileEnemies, ...powerups]
+        this.map = [...platforms, ...cannons, ...spikes, ...enemies, ...powerups]
         this.avSpawnX = avSpawnX
         this.avSpawnY = avSpawnY
     }

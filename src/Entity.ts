@@ -4,8 +4,6 @@ import { Body } from 'matter-js';
 import { fire } from './Bullet'
 import * as PIXI from 'pixi.js'
 import { Bodies } from "matter-js"
-import { Powerup } from './Powerups';
-import { Sprite } from 'pixi.js';
 import { Platform } from './Walls';
 
 export abstract class Entity extends GameObject { //for all 'living' objects in the game.
@@ -220,5 +218,9 @@ export class ProjectileEnemy extends Enemy {
                     fire(true, false, this.matterData.position.x, this.matterData.position.y)
                 }
         }
+    }
+    reset() {
+        super.reset()
+        console.log(this.health, this.dead, "projhealth")
     }
 }

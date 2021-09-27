@@ -12,7 +12,7 @@ import { lvl1 } from './levels/lvl1'
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
 export let bullets: Bullet[] = [];
-export const avatar = new Avatar()//creates an avatar for the player
+export let avatar = new Avatar()//creates an avatar for the player
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
 deadmsg.x = 0
 deadmsg.y = 1395
@@ -44,8 +44,8 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     }
 
     //sets avatar's position to the start of the level 
-    avatar.matterData.position.x = selectedLevel.avSpawnX;
-    avatar.matterData.position.y = selectedLevel.avSpawnY;
+    avatar.matterData.position.x = avatar.spawnX = selectedLevel.avSpawnX;
+    avatar.matterData.position.y = avatar.spawnY = selectedLevel.avSpawnY;
 }
 loadMap(selectedLevel)
 
