@@ -55,7 +55,7 @@ export class Avatar extends Entity {
     }
 
     reset() {
-        this.health = 10
+        this.health = 5
         this.dead = false
         this.grounded = true
         this.pixiData.texture = this.posTextures[0]

@@ -19,6 +19,7 @@ deadmsg.x = 0
 deadmsg.y = 1395
 let selectedLevel: Level;//for switching between levels
 let gameStarted: boolean;
+let emitting: boolean;
 
 
 //draws a new stage
@@ -39,6 +40,7 @@ document.body.appendChild(canvas.view);
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
     console.log("level loaded")
     selectedLevel = map;
+    gameStarted = true;
     //adds player and level matterData to the engine so that they work with physics.
     World.add(engine.world, [avatar.matterData]);
     for (let i = 0; i < map.map.length; i++) {
@@ -53,8 +55,17 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     //sets avatar's position to the start of the level 
     avatar.matterData.position.x = avatar.spawnX = selectedLevel.avSpawnX;
     avatar.matterData.position.y = avatar.spawnY = selectedLevel.avSpawnY;
-    gameStarted = true;
     gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
+
+    //fires cannons every 3 seconds
+    for (let i = 0; i < selectedLevel.cannons.length; i++) {
+        setInterval(selectedLevel.cannons[i].emit, 3000)
+    }
+
+    //projectile enemies fire if avatar is in proximity to them
+    for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
+        setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
+    }
 }
 
 
@@ -255,16 +266,9 @@ function gameLoop(delta: number) {
     }
 }
 
-if(gameStarted == true){
-//fires cannons every 3 seconds
-for (let i = 0; i < selectedLevel.cannons.length; i++) {
-    setInterval(selectedLevel.cannons[i].emit, 3000)
-}
+if (gameStarted === true) {
+    console.log("true")
 
-//projectile enemies fire if avatar is in proximity to them
-for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
-    setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
-}
 }
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
