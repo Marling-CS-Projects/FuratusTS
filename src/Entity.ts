@@ -218,6 +218,7 @@ export class ProjectileEnemy extends Enemy {
                     fire(true, false, this.matterData.position.x, this.matterData.position.y)
                 }
         }
+        console.log("emitting")
     }
     reset() {
         super.reset()

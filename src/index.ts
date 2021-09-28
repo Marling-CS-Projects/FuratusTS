@@ -3,20 +3,23 @@ import { Avatar, power } from './Entity'
 import * as PIXI from 'pixi.js'
 import { Level } from './levels/Level'
 import { Bullet, fire } from './Bullet'
-import { Powerup } from './Powerups'
-import { Engine, Body, World, Bodies } from 'matter-js';
+import { Engine, Body, World } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
-import { lvl1 } from './levels/lvl1'
-
+import { createMenu, createStartMenu } from './menus';
+import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
 export let bullets: Bullet[] = [];
 export let avatar = new Avatar()//creates an avatar for the player
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
+export let gameObjectManager: GameObject[] = [];//array of all gameObjects. stored seperately to stop circular dependency error.
+
 deadmsg.x = 0
 deadmsg.y = 1395
-let selectedLevel = lvl1 //for switching between levels
+let selectedLevel: Level;//for switching between levels
+let gameStarted: boolean;
+
 
 //draws a new stage
 export let canvas = new PIXI.Application(
@@ -26,12 +29,16 @@ export let canvas = new PIXI.Application(
         backgroundColor: 0x808080 //grey
     }
 );
+createMenu()
+createStartMenu()
 
 canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 document.body.appendChild(canvas.view);
 
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
+    console.log("level loaded")
+    selectedLevel = map;
     //adds player and level matterData to the engine so that they work with physics.
     World.add(engine.world, [avatar.matterData]);
     for (let i = 0; i < map.map.length; i++) {
@@ -46,8 +53,9 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     //sets avatar's position to the start of the level 
     avatar.matterData.position.x = avatar.spawnX = selectedLevel.avSpawnX;
     avatar.matterData.position.y = avatar.spawnY = selectedLevel.avSpawnY;
+    gameStarted = true;
+    gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
 }
-loadMap(selectedLevel)
 
 
 //keyboard event handlers
@@ -66,6 +74,13 @@ function keysDown(e: any) {
 function keysUp(e: any) {
     keys[e.keyCode] = false;
 }
+
+//for regulating bullet fire
+let lastBulletTime: number = 0;
+function updateElapsed() {
+    elapsed = Date.now() - lastBulletTime;
+}
+let elapsed: number = (Date.now() - lastBulletTime);
 
 //collision detection for avatar. use similar method to bullets to compact these into one or statement later.
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
@@ -170,86 +185,77 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
         })
 })
 
-let lastBulletTime: number = 0;
-function updateElapsed() {
-    elapsed = Date.now() - lastBulletTime;
-}
-let elapsed: number = (Date.now() - lastBulletTime);
-
-
-
 
 function gameLoop(delta: number) {
-    for (let i = 0; i < bullets.length; i++) {
-        if (bullets[i].dead) { //removes bullets that are out of screen.
-            World.remove(engine.world, bullets[i].matterData)
-            canvas.stage.removeChild(bullets[i].pixiData);
-            bullets.splice(i, 1); //removes dead bullets from array
+    if (gameStarted == true) {
+        for (let i = 0; i < bullets.length; i++) {
+            if (bullets[i].dead) { //removes bullets that are out of screen.
+                World.remove(engine.world, bullets[i].matterData)
+                canvas.stage.removeChild(bullets[i].pixiData);
+                bullets.splice(i, 1); //removes dead bullets from array
+            }
         }
-    }
-    canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2; //centres the camera on the avatar.
-    //Z makes the player 'jump' by giving the avatar an upwards velocity.
-    if (keys["90"] && avatar.dead === false && avatar.grounded === true) {
-        Body.setVelocity(avatar.matterData, { x: avatar.matterData.velocity.x, y: -12 })
-    }
-    //C         
-    if (keys["88"] && avatar.dead === false) {
+        canvas.stage.position.x = -avatar.matterData.position.x + canvas.view.width / 2; //centres the camera on the avatar.
+        //Z makes the player 'jump' by giving the avatar an upwards velocity.
+        if (keys["90"] && avatar.dead === false && avatar.grounded === true) {
+            Body.setVelocity(avatar.matterData, { x: avatar.matterData.velocity.x, y: -12 })
+        }
+        //C         
+        if (keys["88"] && avatar.dead === false) {
 
-        if ((elapsed) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
-            fire(false, true, avatar.matterData.position.x, avatar.matterData.position.y);
-            lastBulletTime = Date.now();  //updates the last time a bullet was fired;
+            if ((elapsed) > 300) { //lastBulletTime is initially 0, so this will always fire straight away
+                fire(false, true, avatar.matterData.position.x, avatar.matterData.position.y);
+                lastBulletTime = Date.now();  //updates the last time a bullet was fired;
+            }
         }
-    }
-    //X
-    if (keys["67"] && avatar.dead === false) {
+        //X
+        if (keys["67"] && avatar.dead === false) {
 
-        if ((elapsed) > 300) {
-            fire(true, true, avatar.matterData.position.x, avatar.matterData.position.y);
-            lastBulletTime = Date.now();
+            if ((elapsed) > 300) {
+                fire(true, true, avatar.matterData.position.x, avatar.matterData.position.y);
+                lastBulletTime = Date.now();
+            }
         }
-    }
 
-    //R allows the player to reset the avatar in case of death
-    if (keys["82"]) {
-        avatar.reset()
-        for (let i = 0; i < selectedLevel.enemies.length; i++) {
-            selectedLevel.enemies[i].reset()
+        //R allows the player to reset the avatar in case of death
+        if (keys["82"]) {
+            avatar.reset()
+            for (let i = 0; i < selectedLevel.enemies.length; i++) {
+                selectedLevel.enemies[i].reset()
+            }
+            for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
+                selectedLevel.projectileEnemies[i].reset()
+            }
+            for (let i = 0; i < selectedLevel.powerups.length; i++) {
+                selectedLevel.powerups[i].reset()
+            }
+            for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
+                bullets[i].dead = true;
+            }
         }
-        for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
-            selectedLevel.projectileEnemies[i].reset()
-        }
-        for (let i = 0; i < selectedLevel.powerups.length; i++) {
-            selectedLevel.powerups[i].reset()
-        }
-        for (let i = 0; i < bullets.length; i++) { //removes all dead bullets remaining on the stage.
-            bullets[i].dead = true;
-        }
-    }
 
-    //Left arrow
-    if (keys["37"] && avatar.dead === false) {
-        Body.setVelocity(avatar.matterData, { x: -5, y: avatar.matterData.velocity.y })
-    }
-    //Right arrow
-    if (keys["39"] && avatar.dead === false) {
-        Body.setVelocity(avatar.matterData, { x: 5, y: avatar.matterData.velocity.y })
-    }
+        //Left arrow
+        if (keys["37"] && avatar.dead === false) {
+            Body.setVelocity(avatar.matterData, { x: -5, y: avatar.matterData.velocity.y })
+        }
+        //Right arrow
+        if (keys["39"] && avatar.dead === false) {
+            Body.setVelocity(avatar.matterData, { x: 5, y: avatar.matterData.velocity.y })
+        }
 
-    avatar.update(delta)
-    bullets.forEach((bullet: Bullet) => bullet.update(delta))
-    for (let i = 0; i < selectedLevel.map.length; i++) {
-        selectedLevel.map[i].update(delta)
-    }
+        avatar.update(delta)
+        bullets.forEach((bullet: Bullet) => bullet.update(delta))
+        for (let i = 0; i < selectedLevel.map.length; i++) {
+            selectedLevel.map[i].update(delta)
+        }
 
-    updateElapsed();
-    Engine.update(engine, delta * 10)
-    // for testing console.log(avatar.power)
+        updateElapsed();
+        Engine.update(engine, delta * 10)
+        // for testing console.log(avatar.power)
+    }
 }
 
-//array of all gameObjects. stored seperately to stop circular dependency error.
-export let gameObjectManager: GameObject[] = [];
-gameObjectManager.push(avatar, ...selectedLevel.map,)
-
+if(gameStarted == true){
 //fires cannons every 3 seconds
 for (let i = 0; i < selectedLevel.cannons.length; i++) {
     setInterval(selectedLevel.cannons[i].emit, 3000)
@@ -259,7 +265,7 @@ for (let i = 0; i < selectedLevel.cannons.length; i++) {
 for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
     setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
 }
-
+}
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
 testtext.position.x = 950

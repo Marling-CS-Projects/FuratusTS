@@ -18,7 +18,7 @@ let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.
 let leftcannon = new Cannon(PIXI.Sprite.from("assets/leftcannon.png"), Bodies.rectangle(1700, 200,60,30, {isStatic:true}), "left")
 let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(950, 300,60,30, {isStatic:true}), "both")
 const cannons1: Cannon[]= [];
-cannons1.push( )
+cannons1.push( rightcannon)
 
 //spikes created for level 1
 let spike = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1400, 210, 39, 39, {isStatic: true}));
