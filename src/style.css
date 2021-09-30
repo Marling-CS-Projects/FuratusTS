@@ -1,4 +1,4 @@
-.ng-button-container {
+.button-container,.save-button-container,  .quit-button-container {
     padding: 10px 15px;
     border-radius: 5px;
     background-color: rgb(252, 202, 12);
@@ -7,8 +7,6 @@
     font-weight: bold;
     cursor: pointer;
   }
-
-
   body,
   html {
     padding: 0;
@@ -37,7 +35,7 @@
     z-index: 1;
   }
   
-  .menu-container {
+  .menu-container, .level-end-container {
     position: absolute;
     z-index: 2;  /* sends menu to the front of the screen */
     top: 0;
@@ -50,4 +48,6 @@
     justify-content: center;
     flex-direction: row;
   }
+
+
   

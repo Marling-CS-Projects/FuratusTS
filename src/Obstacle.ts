@@ -1,5 +1,7 @@
 import { GameObject } from "./GameObject";
-import { fire, createBullet } from './Bullet'
+import {fire} from './Bullet'
+import * as PIXI from 'pixi.js'
+
 abstract class Obstacle extends GameObject {
     constructor(pixiData: any, matterData: any) {
         super(pixiData, matterData)

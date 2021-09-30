@@ -1,12 +1,12 @@
 //import { updateBullets, fire } from './Bullets'
 import { Avatar, power } from './Entity'
 import * as PIXI from 'pixi.js'
-import { Level } from './levels/Level'
+import { Level, LevelEnd } from './levels/Level'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
-import { createMenu, createStartMenu } from './menus';
+import { createMenu, createStartMenu, menuContainer, closeMenu, levelEndContainer } from './menus';
 import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
@@ -19,7 +19,6 @@ deadmsg.x = 0
 deadmsg.y = 1395
 let selectedLevel: Level;//for switching between levels
 let gameStarted: boolean;
-let emitting: boolean;
 
 
 //draws a new stage
@@ -30,15 +29,16 @@ export let canvas = new PIXI.Application(
         backgroundColor: 0x808080 //grey
     }
 );
-createMenu()
+createMenu(menuContainer)
 createStartMenu()
 
 canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
-document.body.appendChild(canvas.view);
 
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
-    console.log("level loaded")
+    World.clear//clears things from previous level
+    canvas.stage.removeChildren(0)
+    document.body.appendChild(canvas.view);
     selectedLevel = map;
     gameStarted = true;
     //adds player and level matterData to the engine so that they work with physics.
@@ -147,6 +147,12 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                     avatar.applyPower(power)
                     Body.setPosition(selectedLevel.powerups[i].matterData, { x: 3000, y: 800 }) //moves the powerup out of view
                 }
+            }
+
+            if (collidingWith == selectedLevel.levelEnd.matterData){
+                document.body.removeChild(canvas.view);
+                createMenu(levelEndContainer)
+                selectedLevel.levelEnd.levelEndMenu()
             }
         })
 })
@@ -264,11 +270,6 @@ function gameLoop(delta: number) {
         Engine.update(engine, delta * 10)
         // for testing console.log(avatar.power)
     }
-}
-
-if (gameStarted === true) {
-    console.log("true")
-
 }
 /*let testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
