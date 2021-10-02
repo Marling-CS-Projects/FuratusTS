@@ -36,4 +36,4 @@ const avSpawnY = 150
 
 const bossEnd = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), null)
 
-export const boss = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY, bossEnd)
+export const boss = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY, bossEnd, 3)

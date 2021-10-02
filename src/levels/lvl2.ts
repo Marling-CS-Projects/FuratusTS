@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { Bodies } from 'matter-js';
-import { Platform, Wall} from '../Walls'
+import { Platform } from '../Walls'
 import { Spike, Cannon, } from '../Obstacle'
 import {Enemy, ProjectileEnemy} from '../Entity'
 import { Powerup} from '../Powerups'
@@ -34,7 +34,4 @@ powerups.push()
 
 const lvl2End = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), lvl3)
 
-const avSpawnX = 300
-const avSpawnY = 150
-
-export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY,lvl2End)
+export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 300, 200,lvl2End, 1)

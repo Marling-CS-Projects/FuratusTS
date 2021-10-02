@@ -50,5 +50,5 @@ powerups.push()
 //cannons should be drawn -40. spikes -30
 //shields are 38x50
 
-const lvl1End = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), lvl2)
-export const lvl1 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 300, 300, lvl1End)
+const lvl1End = new LevelEnd(Bodies.rectangle(400, 300, 30, 30, {isStatic:true}), lvl2)
+export const lvl1 = new Level(platforms,cannons, spikes, enemies, prEnemies, powerups, 300, 300, lvl1End, 0)

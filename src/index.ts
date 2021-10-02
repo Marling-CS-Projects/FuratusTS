@@ -17,7 +17,7 @@ export let gameObjectManager: GameObject[] = [];//array of all gameObjects. stor
 
 deadmsg.x = 0
 deadmsg.y = 1395
-let selectedLevel: Level;//for switching between levels
+export let selectedLevel: Level;//for switching between levels
 let gameStarted: boolean;
 
 
@@ -36,8 +36,7 @@ canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
-    World.clear//clears things from previous level
-    canvas.stage.removeChildren(0)
+    removeMap()
     document.body.appendChild(canvas.view);
     selectedLevel = map;
     gameStarted = true;
@@ -53,8 +52,12 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     }
 
     //sets avatar's position to the start of the level 
-    avatar.matterData.position.x = avatar.spawnX = selectedLevel.avSpawnX;
-    avatar.matterData.position.y = avatar.spawnY = selectedLevel.avSpawnY;
+    avatar.spawnX = selectedLevel.avSpawnX;
+    avatar.spawnY = selectedLevel.avSpawnY;
+    Body.setVelocity(avatar.matterData, {x: 0, y: 0})
+    Body.setPosition(avatar.matterData, { x: avatar.spawnX, y: avatar.spawnY})
+    
+    // avatar.matterData.velocity.x = avatar.matterData.velocity.y = 0
     gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
 
     //fires cannons every 3 seconds
@@ -66,6 +69,14 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
         setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
     }
+    console.log("map loaded")
+}
+
+export function removeMap(){
+    gameStarted = false;
+    World.clear(engine.world, false)
+    canvas.stage.removeChildren(0) //removes all children from stage from  child index 0
+    console.log("map removeed")
 }
 
 
@@ -205,6 +216,7 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
 
 function gameLoop(delta: number) {
     if (gameStarted == true) {
+        console.log(avatar.matterData.velocity)
         for (let i = 0; i < bullets.length; i++) {
             if (bullets[i].dead) { //removes bullets that are out of screen.
                 World.remove(engine.world, bullets[i].matterData)

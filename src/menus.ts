@@ -1,6 +1,7 @@
 import $ from "jquery"
-import {loadMap} from "./index"
+import {loadMap,selectedLevel, removeMap} from "./index"
 import { lvl1 } from "./levels/lvl1";
+import {  } from "./index";
 
 export const menuContainer = document.createElement("div") //creates a constant to be reused when creating divs
 export const levelEndContainer = document.createElement("div")
@@ -21,7 +22,6 @@ export function createStartMenu() {
     $(".button-container").on('click', function () {
         loadMap(lvl1); //begins level one when the start button is pressed
         closeMenu(menuContainer);
-        console.log("clciked")
     });
 }
 
@@ -40,8 +40,7 @@ export function createLevelEndMenu(){
     $(".save-button-container").on('click', function() {
         //save() (add later)
         closeMenu(levelEndContainer)
-        console.log("clicked")
-        
+        loadMap(selectedLevel.levelEnd.nextlvl) //loads the level after selectedLevel
     })
 }
 

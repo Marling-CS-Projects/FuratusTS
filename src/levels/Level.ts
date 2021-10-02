@@ -18,7 +18,8 @@ export class Level {
     avSpawnX;
     avSpawnY;
     levelEnd;
-    constructor(platforms:Platform[], cannons:Cannon[], spikes:Spike[], enemies:Enemy[], projectileEnemies:ProjectileEnemy[], powerups:Powerup[], avSpawnX: number, avSpawnY:number, levelEnd: LevelEnd,){
+    levelIndex;
+    constructor(platforms:Platform[], cannons:Cannon[], spikes:Spike[], enemies:Enemy[], projectileEnemies:ProjectileEnemy[], powerups:Powerup[], avSpawnX: number, avSpawnY:number, levelEnd: LevelEnd, levelIndex: number){
         this.platforms = platforms
         this.cannons = cannons;
         this.spikes = spikes;
@@ -29,6 +30,7 @@ export class Level {
         this.avSpawnX = avSpawnX
         this.avSpawnY = avSpawnY
         this.levelEnd = levelEnd;
+        this.levelIndex = levelIndex;
     }
 }
 
