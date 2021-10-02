@@ -5,7 +5,6 @@ import { Powerup } from "../Powerups";
 import { GameObject } from "../GameObject";
 import { createMenu, levelEndContainer,createLevelEndMenu } from "../menus"
 import * as PIXI from 'pixi.js'
-import { loadMap } from "..";
 
 export class Level {
     platforms;
@@ -36,17 +35,10 @@ export class Level {
 
 
 export class LevelEnd extends GameObject {
-    completed:boolean;
     nextlvl:Level;
     constructor(matterData:any, nextlvl:Level){
         super(PIXI.Sprite.from("assets/goal.png"), matterData)
-        this.completed = false;
         this.nextlvl = nextlvl;
-    }
-
-    saveAndContinue(){
-        loadMap(this.nextlvl)
-        this.completed = true
     }
 
     levelEndMenu(){

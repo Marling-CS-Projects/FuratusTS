@@ -1,7 +1,7 @@
 import $ from "jquery"
-import {loadMap,selectedLevel, removeMap} from "./index"
+import {loadMap,selectedLevel} from "./index"
 import { lvl1 } from "./levels/lvl1";
-import {  } from "./index";
+import {getSavedLevel, getSaveIndex, saveGame} from "./saveManager"
 
 export const menuContainer = document.createElement("div") //creates a constant to be reused when creating divs
 export const levelEndContainer = document.createElement("div")
@@ -11,17 +11,28 @@ levelEndContainer.classList.add("level-end-container");
 export function createStartMenu() {
     $(menuContainer).html(`
         <div>
+        <p> FURATUS</p>
             <div class="button-container">
                 New Game
             </div>
-            
             <br />
+            <div class="load-button-container">
+                Load Game
+            </div>
             <!-- add best times here-->
         </div>
     `);
     $(".button-container").on('click', function () {
         loadMap(lvl1); //begins level one when the start button is pressed
         closeMenu(menuContainer);
+    });
+    $(".load-button-container").on('click', function (){
+        if(getSaveIndex() == "noSave"){
+            alert("No Save Data Detected")
+        } else {
+            loadMap(getSavedLevel())
+            closeMenu(menuContainer)
+        }
     });
 }
 
@@ -38,9 +49,9 @@ export function createLevelEndMenu(){
         </div>    
     `);
     $(".save-button-container").on('click', function() {
-        //save() (add later)
         closeMenu(levelEndContainer)
         loadMap(selectedLevel.levelEnd.nextlvl) //loads the level after selectedLevel
+        saveGame(selectedLevel.levelIndex)
     })
 }
 

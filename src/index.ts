@@ -7,6 +7,7 @@ import { Engine, Body, World } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
 import { createMenu, createStartMenu, menuContainer, closeMenu, levelEndContainer } from './menus';
+import { saveGame } from './saveManager';
 import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
