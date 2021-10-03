@@ -15,16 +15,22 @@ export function createStartMenu() {
             <div class="button-container">
                 New Game
             </div>
-            <br />
+            <br/>
             <div class="load-button-container">
                 Load Game
             </div>
-            <!-- add best times here-->
+            <br/>
+            <div class="bt-button-container">
+                Best Times
+            </div>
         </div>
     `);
     $(".button-container").on('click', function () {
-        loadMap(lvl1); //begins level one when the start button is pressed
-        closeMenu(menuContainer);
+        if(confirm("Starting a new game will overwrite any previous save data. Are you sure you want to continue?") == true) {
+            loadMap(lvl1); //begins level one when the start button is pressed
+            closeMenu(menuContainer);
+            saveGame(selectedLevel.levelIndex)
+        }
     });
     $(".load-button-container").on('click', function (){
         if(getSaveIndex() == "noSave"){
@@ -45,13 +51,20 @@ export function createLevelEndMenu(){
         <br>
         <div>
             <div class ="quit-button-container">
-                Quit
+                Save and Quit
         </div>    
     `);
     $(".save-button-container").on('click', function() {
         closeMenu(levelEndContainer)
         loadMap(selectedLevel.levelEnd.nextlvl) //loads the level after selectedLevel
         saveGame(selectedLevel.levelIndex)
+    })
+    $(".quit-button-container").on('click', function(){
+        closeMenu(levelEndContainer)
+        saveGame(selectedLevel.levelEnd.nextlvl.levelIndex)
+        createStartMenu()
+        createMenu(menuContainer)
+
     })
 }
 

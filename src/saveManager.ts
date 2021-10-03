@@ -23,7 +23,7 @@ const levelArray: Level[] = [lvl1, lvl2, lvl3, boss]
 
 export function getSavedLevel(){
     for(let i = 0; i < levelArray.length; i++){
-        if(levelArray[i].levelIndex === (getSaveIndex())){
+        if(levelArray[i].levelIndex === (getSaveIndex())){ //cycles through every level until it finds the saved one
             return levelArray[i]
         }
     }

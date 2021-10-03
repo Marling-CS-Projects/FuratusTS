@@ -7,7 +7,6 @@ import { Engine, Body, World } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
 import { createMenu, createStartMenu, menuContainer, closeMenu, levelEndContainer } from './menus';
-import { saveGame } from './saveManager';
 import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
@@ -77,7 +76,6 @@ export function removeMap(){
     gameStarted = false;
     World.clear(engine.world, false)
     canvas.stage.removeChildren(0) //removes all children from stage from  child index 0
-    console.log("map removeed")
 }
 
 
