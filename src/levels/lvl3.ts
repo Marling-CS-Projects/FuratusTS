@@ -9,17 +9,36 @@ import {boss} from'./boss'
 
 
 //platforms
-let platform = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
+let platform0 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(400,440,180, 20, {isStatic:true}));
+let platform1 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(800,440,180, 20, {isStatic:true}));
+let platform2 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(1050,300,180, 20, {isStatic:true}));
+let platform3 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(800,160,180, 20, {isStatic:true}));
+let platform4 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(400,160,180, 20, {isStatic:true}));
+let platform5 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(100,160,180, 20, {isStatic:true}));
+let platform6 = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(-500,160,720, 20, {isStatic:true}));
+
+ 
+
+
+
 const platforms: Platform[] = [];
-platforms.push(platform)
+platforms.push(platform0, platform1,platform2, platform2, platform3,platform4,platform5, platform6)
 
 //cannons
+let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(100, 120, 60,30, {isStatic:true}), "both")
+
 const cannons: Cannon[]= [];
-cannons.push()
+cannons.push(bothcannon)
 
 //spikes
+let trispike0 = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(800, 410, 117, 39, {isStatic: true}));
+let trispike1 = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(1050, 270, 117, 39, {isStatic: true}));
+let trispike2 = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(800, 130, 117, 39, {isStatic: true}));
+
+
+
 const spikes: Spike[] = [];
-spikes.push( )
+spikes.push( trispike0 , trispike1,trispike2)
 
 
 //enemies
@@ -33,9 +52,9 @@ prEnemies.push()
 const powerups:Powerup[] = []
 powerups.push()
 
-const avSpawnX = 300
-const avSpawnY = 150
+const avSpawnX = 400
+const avSpawnY = 350
 
-const lvl3End = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), boss)
+const lvl3End = new LevelEnd(Bodies.rectangle(-841, 130, 30, 30, {isStatic:true}), boss)
 
 export const lvl3 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY, lvl3End, 2)

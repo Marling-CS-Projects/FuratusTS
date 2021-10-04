@@ -14,6 +14,7 @@ export let bullets: Bullet[] = [];
 export let avatar = new Avatar()//creates an avatar for the player
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
 export let gameObjectManager: GameObject[] = [];//array of all gameObjects. stored seperately to stop circular dependency error.
+let intervals:any[] = [] //so that all intervals can be cleared on a level end.
 
 deadmsg.x = 0
 deadmsg.y = 1395
@@ -36,6 +37,7 @@ canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
+    avatar.health = 5
     removeMap()
     document.body.appendChild(canvas.view);
     selectedLevel = map;
@@ -62,12 +64,12 @@ export function loadMap(map: Level) { //called by menus to start the game when b
 
     //fires cannons every 3 seconds
     for (let i = 0; i < selectedLevel.cannons.length; i++) {
-        setInterval(selectedLevel.cannons[i].emit, 1500)
+        intervals.push(setInterval(selectedLevel.cannons[i].emit, 1500))
     }
 
     //projectile enemies fire if avatar is in proximity to them
     for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
-        setInterval(selectedLevel.projectileEnemies[i].emit, 1000)
+        intervals.push(setInterval(selectedLevel.projectileEnemies[i].emit, 1000))
     }
     console.log("map loaded")
 }
@@ -76,6 +78,7 @@ export function removeMap(){
     gameStarted = false;
     World.clear(engine.world, false)
     canvas.stage.removeChildren(0) //removes all children from stage from  child index 0
+    intervals.forEach(clearInterval)
 }
 
 
