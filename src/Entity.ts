@@ -66,11 +66,9 @@ export class Avatar extends Entity {
     }
 
     applyPower(powerAdded: power) {
-        console.log("applying power", powerAdded)
         this.power = powerAdded; //means the power is active - used to prevent multiple powers simultaneously
         if (powerAdded === "shield") {
             this.pixiData.texture = this.posTextures[3]
-            console.log("shield added" + this.power)
             setInterval(this.removePower.bind(this), 10000)
             //maybe try storing a variable in Bullet.ts that is updated when shield is called.
 
@@ -88,7 +86,6 @@ export class Avatar extends Entity {
     removePower() {
         this.power = "none"
         this.damage = 1
-        console.log("power removed", this.power)
     }
 }
 
@@ -131,7 +128,7 @@ export class Enemy extends Entity {
         //uses pythagoras to calculate distance between the avatar and the enemy
         let c = (this.pythag(avatar.matterData.position.x, this.matterData.position.x, avatar.matterData.position.y, this.matterData.position.y))
         if (c < 22) {
-            //console.log("in range")
+            console.log("in range")
             this.inProx = true;
             this.inFiringProx = true;
         } else if (c > 22) {
@@ -172,20 +169,19 @@ export class Enemy extends Entity {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
                 } else {
-                    //console.log("at edge")
+                    console.log("at edge")
                 }
             } else if (this.direction == "left") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
                 } else {
-                 //   console.log("at edge")
+                  console.log("at edge")
                 }
             }
         }
     }
 
     reset() {
-        console.log("I have been reset")
         this.health = 3;
         this.direction = "none"
         this.inProx = false;
@@ -193,7 +189,6 @@ export class Enemy extends Entity {
         Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY })
         this.pixiData.position.x = this.spawnX
         this.pixiData.position.y = this.spawnY
-        console.log(this.matterData.position.x, this.matterData.position.y, this.pixiData.position.x, this.pixiData.position.y)
     }
 }
 
@@ -218,10 +213,5 @@ export class ProjectileEnemy extends Enemy {
                     fire(true, false, this.matterData.position.x, this.matterData.position.y)
                 }
         }
-        console.log("emitting")
-    }
-    reset() {
-        super.reset()
-        console.log(this.health, this.dead, "projhealth")
     }
 }

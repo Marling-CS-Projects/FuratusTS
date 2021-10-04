@@ -62,7 +62,7 @@ export function loadMap(map: Level) { //called by menus to start the game when b
 
     //fires cannons every 3 seconds
     for (let i = 0; i < selectedLevel.cannons.length; i++) {
-        setInterval(selectedLevel.cannons[i].emit, 3000)
+        setInterval(selectedLevel.cannons[i].emit, 1500)
     }
 
     //projectile enemies fire if avatar is in proximity to them
@@ -215,7 +215,6 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
 
 function gameLoop(delta: number) {
     if (gameStarted == true) {
-        console.log(avatar.matterData.velocity)
         for (let i = 0; i < bullets.length; i++) {
             if (bullets[i].dead) { //removes bullets that are out of screen.
                 World.remove(engine.world, bullets[i].matterData)
@@ -282,7 +281,8 @@ function gameLoop(delta: number) {
         // for testing console.log(avatar.power)
     }
 }
-/*let testtext = new PIXI.Text('test')
+
+/*tlet testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)
 testtext.position.x = 950
 testtext.position.y = 340 */
