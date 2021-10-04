@@ -9,13 +9,12 @@ export class Powerup extends GameObject {
     power: power
     spawnX: number
     spawnY: number
-    active:boolean
-    constructor(pixiData: any, matterData: any, power: power, spawnX:number, spawnY:number, active:boolean) {
+    
+    constructor(pixiData: any, matterData: any, power: power, spawnX:number, spawnY:number) {
         super(pixiData, matterData)
         this.power = power;
         this.spawnX = spawnX
         this.spawnY = spawnY
-        this.active = active
     }
 
     reset(){

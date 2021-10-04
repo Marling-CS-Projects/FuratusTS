@@ -126,6 +126,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             //for spike collisions
             for (let i = 0; i < selectedLevel.spikes.length; i++) {
                 if (collidingWith == selectedLevel.spikes[i].matterData) {
+                    avatar.grounded = true;
                     if (avatar.power == "invincible") {
                         avatar.removePower()
                     } else {
@@ -207,6 +208,11 @@ Matter.Events.on(engine, "collisionEnd", function (event) {
                     if ((selectedLevel.cannons[i].matterData.position.x - 30 < avatar.matterData.position.x) || (avatar.matterData.position.x < selectedLevel.cannons[i].matterData.position.x + 30)) {
                         avatar.grounded = false;
                     }
+                }
+            }
+            for (let i = 0; i < selectedLevel.spikes.length; i++) {
+                if (possibleGrounding == selectedLevel.spikes[i].matterData) {
+                    avatar.grounded = false;
                 }
             }
         })

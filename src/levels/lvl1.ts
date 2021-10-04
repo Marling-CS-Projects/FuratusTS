@@ -22,10 +22,8 @@ platforms.push(platform0,platform1,platform2, platform3, platform4,platform5, pl
 
 //cannons created for level 1
 let rightcannon = new Cannon(PIXI.Sprite.from("assets/rightcannon.png"), Bodies.rectangle(1700, 210, 60,30, {isStatic:true}), "right")
-let leftcannon = new Cannon(PIXI.Sprite.from("assets/leftcannon.png"), Bodies.rectangle(1700, 200,60,30, {isStatic:true}), "left")
-let bothcannon = new Cannon(PIXI.Sprite.from("assets/bothcannon.png"), Bodies.rectangle(950, 300,60,30, {isStatic:true}), "both")
 const cannons: Cannon[]= [];
-cannons.push()
+cannons.push(rightcannon)
 
 //spikes created for level 1
 let spike0 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(200, 310, 39, 39, {isStatic: true}));
@@ -33,30 +31,29 @@ let spike1 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(
 let spike2 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(1000, 310, 39, 39, {isStatic: true}));
 let spike3 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(3459, 310, 39, 39, {isStatic: true}));
 let spike4 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(4141, 310, 39, 39, {isStatic: true}));
-let spike5 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(4359, 310, 39, 39, {isStatic: true}));
+let spike5 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(4400, 310, 39, 39, {isStatic: true}));
 let spike6 = new Spike(PIXI.Sprite.from("assets/spike39.png"), Bodies.rectangle(5041, 310, 39, 39, {isStatic: true}));
 
 let trispike0 = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(1400, 310, 117, 39, {isStatic: true }));
 let trispike1 = new Spike(PIXI.Sprite.from("assets/3spike39.png"), Bodies.rectangle(4700, 310, 117, 39, {isStatic: true }));
 const spikes: Spike[] = [];
-spikes.push(spike6) 
+spikes.push(spike0, spike1, spike2, spike3,spike4,spike5,spike6,trispike1) 
 
 
 //enemies created for level 1
-let prEnemy0 = new ProjectileEnemy(Bodies.rectangle(4500, 300, 60, 60, { inertia: Infinity }), 4700, 300, platform7)
-let prEnemy1 = new ProjectileEnemy(Bodies.rectangle(4900, 300, 60, 60, { inertia: Infinity }), 4800, 300, platform7)
+let prEnemy0 = new ProjectileEnemy(Bodies.rectangle(4080, 300, 60, 60, { inertia: Infinity }), 4080, 300, platform6)
 
-let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(4080, 300, 60, 60, { inertia: Infinity }), 4080, 300, platform6)
+let enemy0 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(4500, 300, 60, 60, { inertia: Infinity }), 4700, 300, platform7)
+let enemy1 = new Enemy(PIXI.Sprite.from("assets/enemy.png"),Bodies.rectangle(4900, 300, 60, 60, { inertia: Infinity }), 4800, 300, platform7)
 const enemies:Enemy[] = [];
-enemies.push()
+enemies.push(prEnemy0, enemy0, enemy1)
 const prEnemies:ProjectileEnemy[] = [];
-prEnemies.push()
+prEnemies.push(prEnemy0)
 //prEnemies1.push( prEnemy1)
 
 
 
 //powerups created for level 1
-let shield1 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(1400, 205, 38, 50, {isStatic:true}), "shield", 1400, 205, false)
 const powerups:Powerup[] = []
 powerups.push()
 
