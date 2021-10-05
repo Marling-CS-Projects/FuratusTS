@@ -1,17 +1,18 @@
 //import { updateBullets, fire } from './Bullets'
-import { Avatar, power } from './Entity'
+import { Avatar, power, Boss } from './Entity'
 import * as PIXI from 'pixi.js'
-import { Level, LevelEnd } from './levels/Level'
+import { Level,} from './levels/Level'
 import { Bullet, fire } from './Bullet'
 import { Engine, Body, World } from 'matter-js';
 import * as Matter from 'matter-js';
 import { GameObject } from './GameObject';
-import { createMenu, createStartMenu, menuContainer, closeMenu, levelEndContainer } from './menus';
+import { createMenu, createStartMenu, menuContainer,levelEndContainer } from './menus';
 import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
 export let bullets: Bullet[] = [];
 export let avatar = new Avatar()//creates an avatar for the player
+export const boss = new Boss()
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
 export let gameObjectManager: GameObject[] = [];//array of all gameObjects. stored seperately to stop circular dependency error.
 let intervals:any[] = [] //so that all intervals can be cleared on a level end.

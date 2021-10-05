@@ -60,7 +60,7 @@ let shield1 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.re
 let shield2 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(900, 120, 38, 50, {isStatic:true}), "invincible",900,120,)
 let shield3 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(1125, 120, 38, 50, {isStatic:true}), "invincible",1125,120,)
 
-let dmgbuff0 = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(3041, 210, 38, 50, {isStatic:true}), "dmgbuff",470,310,)
+let dmgbuff0 = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(3041, 210, 38, 50, {isStatic:true}), "dmgbuff",3041,210,)
 
 const powerups:Powerup[] = []
 powerups.push(shield0, shield1,shield2,shield3, dmgbuff0)
