@@ -5,7 +5,7 @@ import { Spike, Cannon, } from '../Obstacle'
 import {Enemy, ProjectileEnemy} from '../Entity'
 import { Powerup} from '../Powerups'
 import {Level, LevelEnd } from "./Level"
-import {boss} from'./boss'
+import {bossLvl} from'./boss'
 
 
 //platforms
@@ -16,10 +16,6 @@ let platform3 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rect
 let platform4 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(400,160,180, 20, {isStatic:true}));
 let platform5 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(100,160,180, 20, {isStatic:true}));
 let platform6 = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(-500,160,720, 20, {isStatic:true}));
-
- 
-
-
 
 const platforms: Platform[] = [];
 platforms.push(platform0, platform1,platform2, platform2, platform3,platform4,platform5, platform6)
@@ -52,9 +48,6 @@ prEnemies.push()
 const powerups:Powerup[] = []
 powerups.push()
 
-const avSpawnX = 400
-const avSpawnY = 350
+const lvl3End = new LevelEnd(Bodies.rectangle(-841, 130, 30, 30, {isStatic:true}), bossLvl)
 
-const lvl3End = new LevelEnd(Bodies.rectangle(-841, 130, 30, 30, {isStatic:true}), boss)
-
-export const lvl3 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY, lvl3End, 2)
+export const lvl3 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 400, 350, lvl3End,2)

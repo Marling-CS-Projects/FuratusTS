@@ -54,17 +54,17 @@ const prEnemies:ProjectileEnemy[] = [];
 prEnemies.push(prEnemy0, prEnemy1, prEnemy2, prEnemy3)
 
 
-//powerups created for level 1
+//powerups 
 let shield0 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(470, 310, 38, 50, {isStatic:true}), "invincible",470,310,)
 let shield1 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(725, 200, 38, 50, {isStatic:true}), "invincible",725,200,)
 let shield2 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(900, 120, 38, 50, {isStatic:true}), "invincible",900,120,)
 let shield3 = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(1125, 120, 38, 50, {isStatic:true}), "invincible",1125,120,)
 
-let dmgbuff0 = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(3041, 210, 38, 50, {isStatic:true}), "dmgbuff",470,310,)
+let dmgbuff0 = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(3041, 210, 38, 50, {isStatic:true}), "dmgbuff",3041,210,)
 
 const powerups:Powerup[] = []
 powerups.push(shield0, shield1,shield2,shield3, dmgbuff0)
 
 const lvl2End = new LevelEnd(Bodies.rectangle(5100, 340, 30, 30, {isStatic:true}), lvl3)
 
-export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 2400, 200,lvl2End, 1)
+export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 350, 250,lvl2End, 1)

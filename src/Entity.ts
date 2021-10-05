@@ -215,3 +215,39 @@ export class ProjectileEnemy extends Enemy {
         }
     }
 }
+
+type floatDirection = "up" | "down"
+export class Boss extends Enemy{
+    floatDir: floatDirection;
+    constructor(){
+        super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(850, 200, 150, 150, {inertia:Infinity}),850,200, null)
+        this.floatDir= "up"
+    }
+    
+    update(delta:number){
+        super.update(delta)
+        this.floatDirection()
+        this.float()
+    }
+    approachAvatar(){
+        //to stop the boss from approaching the avatar
+    }
+
+    floatDirection(){
+        if(this.matterData.position.y > 300){
+            this.floatDir = "up"
+        }
+        if(this.matterData.position.y < 100){
+            this.floatDir = "down"
+        }
+    }
+
+    float(){
+        if (this.floatDir === "up" ){
+            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: +5})
+        } else if (this.floatDir ==="down"){
+            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: -5})
+
+        }
+    }
+}

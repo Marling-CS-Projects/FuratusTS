@@ -1,5 +1,5 @@
 //import { updateBullets, fire } from './Bullets'
-import { Avatar, power } from './Entity'
+import { Avatar, power, Boss } from './Entity'
 import * as PIXI from 'pixi.js'
 import { Level, LevelEnd } from './levels/Level'
 import { Bullet, fire } from './Bullet'
@@ -10,11 +10,12 @@ import { createMenu, createStartMenu, menuContainer, closeMenu, levelEndContaine
 import "./style.css"
 //creates variables to be used in the rest of the game
 export const engine = Engine.create();
+export const boss = new Boss()
 export let bullets: Bullet[] = [];
 export let avatar = new Avatar()//creates an avatar for the player
 export const deadmsg = PIXI.Sprite.from("assets/youdied.png")
 export let gameObjectManager: GameObject[] = [];//array of all gameObjects. stored seperately to stop circular dependency error.
-let intervals:any[] = [] //so that all intervals can be cleared on a level end.
+let intervals: any[] = [] //so that all intervals can be cleared on a level end.
 
 deadmsg.x = 0
 deadmsg.y = 1395
@@ -37,44 +38,48 @@ canvas.renderer.view.style.position = 'absolute';
 canvas.renderer.view.style.display = "block";
 
 export function loadMap(map: Level) { //called by menus to start the game when button is pressed
-    avatar.health = 5
-    removeMap()
-    document.body.appendChild(canvas.view);
-    selectedLevel = map;
-    gameStarted = true;
-    //adds player and level matterData to the engine so that they work with physics.
-    World.add(engine.world, [avatar.matterData]);
-    for (let i = 0; i < map.map.length; i++) {
-        World.add(engine.world, [map.map[i].matterData])
+    if (map == null) { //for boss level end
     }
-    //adds the pixiData of objects to the stage so they are shown.
-    canvas.stage.addChild(avatar.pixiData, deadmsg);
-    for (let i = 0; i < map.map.length; i++) {
-        canvas.stage.addChild(map.map[i].pixiData)
-    }
+    else {
+        avatar.health = 5
+        removeMap()
+        document.body.appendChild(canvas.view);
+        selectedLevel = map;
+        gameStarted = true;
+        //adds player and level matterData to the engine so that they work with physics.
+        World.add(engine.world, [avatar.matterData]);
+        for (let i = 0; i < map.map.length; i++) {
+            World.add(engine.world, [map.map[i].matterData])
+        }
+        //adds the pixiData of objects to the stage so they are shown.
+        canvas.stage.addChild(avatar.pixiData, deadmsg);
+        for (let i = 0; i < map.map.length; i++) {
+            canvas.stage.addChild(map.map[i].pixiData)
+        }
 
-    //sets avatar's position to the start of the level 
-    avatar.spawnX = selectedLevel.avSpawnX;
-    avatar.spawnY = selectedLevel.avSpawnY;
-    Body.setVelocity(avatar.matterData, {x: 0, y: 0})
-    Body.setPosition(avatar.matterData, { x: avatar.spawnX, y: avatar.spawnY})
-    
-    // avatar.matterData.velocity.x = avatar.matterData.velocity.y = 0
-    gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
+        //sets avatar's position to the start of the level 
+        avatar.spawnX = selectedLevel.avSpawnX;
+        avatar.spawnY = selectedLevel.avSpawnY;
+        Body.setVelocity(avatar.matterData, { x: 0, y: 0 })
+        Body.setPosition(avatar.matterData, { x: avatar.spawnX, y: avatar.spawnY })
 
-    //fires cannons every 3 seconds
-    for (let i = 0; i < selectedLevel.cannons.length; i++) {
-        intervals.push(setInterval(selectedLevel.cannons[i].emit, 1500))
-    }
+        // avatar.matterData.velocity.x = avatar.matterData.velocity.y = 0
+        gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
 
-    //projectile enemies fire if avatar is in proximity to them
-    for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
-        intervals.push(setInterval(selectedLevel.projectileEnemies[i].emit, 1000))
+        //fires cannons every 3 seconds
+        for (let i = 0; i < selectedLevel.cannons.length; i++) {
+            intervals.push(setInterval(selectedLevel.cannons[i].emit, 1500))
+        }
+
+        //projectile enemies fire if avatar is in proximity to them
+        for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
+            intervals.push(setInterval(selectedLevel.projectileEnemies[i].emit, 1000))
+        }
+        console.log("map loaded")
     }
-    console.log("map loaded")
 }
 
-export function removeMap(){
+export function removeMap() {
     gameStarted = false;
     World.clear(engine.world, false)
     canvas.stage.removeChildren(0) //removes all children from stage from  child index 0
@@ -163,7 +168,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                 }
             }
 
-            if (collidingWith == selectedLevel.levelEnd.matterData){
+            if (collidingWith == selectedLevel.levelEnd.matterData) {
                 document.body.removeChild(canvas.view);
                 createMenu(levelEndContainer)
                 selectedLevel.levelEnd.levelEndMenu()
@@ -289,7 +294,10 @@ function gameLoop(delta: number) {
         Engine.update(engine, delta * 10)
         // for testing console.log(avatar.power)
     }
+
+
 }
+
 
 /*tlet testtext = new PIXI.Text('test')
 canvas.stage.addChild(testtext)

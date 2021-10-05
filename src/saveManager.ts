@@ -1,7 +1,7 @@
 import { lvl1, } from './levels/lvl1';
 import { lvl2 } from './levels/lvl2';
 import { lvl3 } from './levels/lvl3';
-import { boss } from './levels/boss';
+import { bossLvl } from './levels/boss';
 import { Level } from './levels/Level';
 
 //localStorage allows the dev to the user's browser's storage
@@ -19,7 +19,7 @@ export function getSaveIndex() {
     }    
 }
 
-const levelArray: Level[] = [lvl1, lvl2, lvl3, boss]
+const levelArray: Level[] = [lvl1, lvl2, lvl3, bossLvl]
 
 export function getSavedLevel(){
     for(let i = 0; i < levelArray.length; i++){
