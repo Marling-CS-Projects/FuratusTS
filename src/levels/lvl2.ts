@@ -67,4 +67,4 @@ powerups.push(shield0, shield1,shield2,shield3, dmgbuff0)
 
 const lvl2End = new LevelEnd(Bodies.rectangle(5100, 340, 30, 30, {isStatic:true}), lvl3)
 
-export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 2400, 200,lvl2End, 1)
+export const lvl2 = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, 350, 200,lvl2End, 1)
