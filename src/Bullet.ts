@@ -2,8 +2,8 @@ import { GameObject } from "./GameObject";
 import * as Matter from "matter-js";
 import { Body, Bodies, World, Engine } from 'matter-js'
 import * as PIXI from 'pixi.js'
-import { canvas, engine, avatar, bullets, gameObjectManager } from './index'
-import { Entity, Enemy } from "./Entity";
+import { canvas, engine, avatar, bullets, gameObjectManager,boss } from './index'
+import { Entity, Enemy, Boss } from "./Entity";
 
 export class Bullet extends GameObject { //creates a bullet class 
     speed: number;
@@ -30,7 +30,7 @@ export class Bullet extends GameObject { //creates a bullet class
             if ((beingShotGameObject == avatar && avatar.power == "invincible")){
                 avatar.removePower()
             } else if (!(beingShotGameObject === avatar && this.firedByAvatar === true) && (avatar.power !== "shield")) { //avatar cannot shoot itself
-                if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false)) //enemies can't shoot each other
+                if (!(beingShotGameObject instanceof Enemy && this.firedByAvatar === false) ) //enemies can't shoot each other
                     if ((this.firedByAvatar === true)) {
                         beingShotGameObject.health -= avatar.damage
                     } else if (this.firedByAvatar === false) {
@@ -38,7 +38,7 @@ export class Bullet extends GameObject { //creates a bullet class
                     }
                 console.log("it was an Entity")//testing
                 console.log("The entity's health is " + beingShotGameObject.health)//testing
-            }
+            } 
             
         }
         this.dead = true;

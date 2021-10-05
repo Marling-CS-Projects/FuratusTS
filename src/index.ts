@@ -54,6 +54,13 @@ export function loadMap(map: Level) { //called by menus to start the game when b
         canvas.stage.addChild(map.map[i].pixiData)
     }
 
+    if (map.levelIndex === 3){ //only adds boss to boss lvl
+        World.add(engine.world, [boss.matterData]);
+        canvas.stage.addChild(boss.pixiData)
+
+        intervals.push(setInterval(boss.atk, 10000))
+    }
+
     //sets avatar's position to the start of the level 
     avatar.spawnX = selectedLevel.avSpawnX;
     avatar.spawnY = selectedLevel.avSpawnY;
@@ -61,7 +68,7 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     Body.setPosition(avatar.matterData, { x: avatar.spawnX, y: avatar.spawnY})
     
     // avatar.matterData.velocity.x = avatar.matterData.velocity.y = 0
-    gameObjectManager = [avatar, ...selectedLevel.map] //clears gameObjectManager and adds new level
+    gameObjectManager = [avatar, boss, ...selectedLevel.map] //clears gameObjectManager and adds new level
 
     //fires cannons every 3 seconds
     for (let i = 0; i < selectedLevel.cannons.length; i++) {
@@ -72,7 +79,6 @@ export function loadMap(map: Level) { //called by menus to start the game when b
     for (let i = 0; i < selectedLevel.projectileEnemies.length; i++) {
         intervals.push(setInterval(selectedLevel.projectileEnemies[i].emit, 1000))
     }
-    console.log("map loaded")
 }
 
 export function removeMap(){
@@ -151,7 +157,6 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                             avatar.health -= 1;
                             console.log(avatar.health)
                         }
-
                     }
                 }
             }
@@ -257,6 +262,7 @@ function gameLoop(delta: number) {
         //R allows the player to reset the avatar in case of death
         if (keys["82"]) {
             avatar.reset()
+            boss.reset()
             for (let i = 0; i < selectedLevel.enemies.length; i++) {
                 selectedLevel.enemies[i].reset()
             }
@@ -286,6 +292,7 @@ function gameLoop(delta: number) {
             selectedLevel.map[i].update(delta)
         }
 
+        boss.update(delta)
         updateElapsed();
         Engine.update(engine, delta * 10)
         // for testing console.log(avatar.power)

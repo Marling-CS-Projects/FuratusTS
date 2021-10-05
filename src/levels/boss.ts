@@ -7,9 +7,13 @@ import { Powerup} from '../Powerups'
 import {Level, LevelEnd } from "./Level"
 
 //platforms
-let platform = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(400,340,720, 20, {isStatic:true}));
+let platform0 = new Platform(PIXI.Sprite.from("assets/longpl.png"), Bodies.rectangle(400,550,720, 20, {isStatic:true}));
+let platform1 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(130,425,180, 20, {isStatic:true}));
+let platform2 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(130,300,180, 20, {isStatic:true}));
+let platform3 = new Platform(PIXI.Sprite.from("assets/shortpl.png"), Bodies.rectangle(130,175,180, 20, {isStatic:true}));
+
 const platforms: Platform[] = [];
-platforms.push(platform)
+platforms.push(platform0, platform1,platform2, platform3)
 
 //cannons
 const cannons: Cannon[]= [];
@@ -31,9 +35,6 @@ prEnemies.push()
 const powerups:Powerup[] = []
 powerups.push()
 
-const avSpawnX = 300
-const avSpawnY = 150
-
 const bossEnd = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), null)
 
-export const boss = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups, avSpawnX, avSpawnY, bossEnd, 3)
+export const boss = new Level(platforms, cannons, spikes, enemies, prEnemies, powerups,  300, 400, bossEnd, 3)

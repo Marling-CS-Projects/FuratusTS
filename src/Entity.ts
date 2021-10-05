@@ -1,5 +1,5 @@
 import { GameObject } from './GameObject'
-import { avatar, deadmsg } from './index'
+import { avatar, canvas, deadmsg } from './index'
 import { Body } from 'matter-js';
 import { fire } from './Bullet'
 import * as PIXI from 'pixi.js'
@@ -128,7 +128,6 @@ export class Enemy extends Entity {
         //uses pythagoras to calculate distance between the avatar and the enemy
         let c = (this.pythag(avatar.matterData.position.x, this.matterData.position.x, avatar.matterData.position.y, this.matterData.position.y))
         if (c < 22) {
-            console.log("in range")
             this.inProx = true;
             this.inFiringProx = true;
         } else if (c > 22) {
@@ -168,14 +167,10 @@ export class Enemy extends Entity {
             if (this.direction == "right") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
-                } else {
-                    console.log("at edge")
-                }
+                } 
             } else if (this.direction == "left") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
-                } else {
-                  console.log("at edge")
                 }
             }
         }
@@ -217,37 +212,77 @@ export class ProjectileEnemy extends Enemy {
 }
 
 type floatDirection = "up" | "down"
-export class Boss extends Enemy{
+export class Boss extends Entity{
     floatDir: floatDirection;
     constructor(){
-        super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(850, 200, 150, 150, {inertia:Infinity}),850,200, null)
+        super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(860, 200, 150, 150, {inertia:Infinity}), 100, false, 860, 200)
         this.floatDir= "up"
+
+        this.atk = this.atk.bind(this)
     }
     
     update(delta:number){
         super.update(delta)
         this.floatDirection()
         this.float()
+
+        if (this.matterData.position.x != 860){
+            Body.setPosition(this.matterData, {x:860, y:this.matterData.position.y})
+        }
     }
-    approachAvatar(){
-        //to stop the boss from approaching the avatar
+    
+    reset(){
+        this.health = 100
+        this.dead = false
+        this.floatDir = "up"
+        Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
+        
+    }
+
+    atk(){
+        this.beam()
+        let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
+        switch(atkSel){
+            case 0:
+                console.log("attack 0")
+                break
+            case 1:
+                console.log("attack 1")
+                break
+            case 2:
+                console.log("attack 2")
+                break
+        }
+    }
+
+    beam(){
+        function removeBeam(){
+            canvas.stage.removeChild(this.bossbeam)
+            this.bossbeam.position.y = 10000
+        }  
+        let bossbeam = PIXI.Sprite.from("./assets/bossbeam.png")
+        bossbeam.position.x = this.pixiData.position.x - 75
+        bossbeam.position.y = this.pixiData.position.y
+        canvas.stage.addChild(bossbeam)
+        setTimeout(removeBeam, 3000)
     }
 
     floatDirection(){
-        if(this.matterData.position.y > 300){
+        if(this.matterData.position.y > 500){
             this.floatDir = "up"
         }
-        if(this.matterData.position.y < 100){
+        if(this.matterData.position.y < 90){
             this.floatDir = "down"
         }
     }
 
     float(){
         if (this.floatDir === "up" ){
-            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: +5})
+            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: -3})
         } else if (this.floatDir ==="down"){
-            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: -5})
+            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: 3})
 
         }
     }
 }
+
