@@ -1,5 +1,5 @@
 //import { updateBullets, fire } from './Bullets'
-import { Avatar, power, Boss } from './Entity'
+import { Avatar, power, Boss, Laser } from './Entity'
 import * as PIXI from 'pixi.js'
 import { Level,} from './levels/Level'
 import { Bullet, fire } from './Bullet'
@@ -160,6 +160,11 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
                     }
                 }
             }
+            if (selectedLevel.levelIndex == 3) {
+                if (collidingWith == boss.matterData){
+                    avatar.health = 1
+                }
+            }
             //for powerup collisions
             for (let i = 0; i < selectedLevel.powerups.length; i++) {
                 if (collidingWith == selectedLevel.powerups[i].matterData) {
@@ -291,7 +296,7 @@ function gameLoop(delta: number) {
         for (let i = 0; i < selectedLevel.map.length; i++) {
             selectedLevel.map[i].update(delta)
         }
-
+        gameObjectManager.filter(gameObject => gameObject instanceof Laser).forEach(laser => laser.update(delta)); //updates all lasers
         boss.update(delta)
         updateElapsed();
         Engine.update(engine, delta * 10)

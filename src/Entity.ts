@@ -1,5 +1,5 @@
 import { GameObject } from './GameObject'
-import { avatar, canvas, deadmsg } from './index'
+import { avatar, canvas, deadmsg, gameObjectManager } from './index'
 import { Body } from 'matter-js';
 import { fire } from './Bullet'
 import * as PIXI from 'pixi.js'
@@ -240,11 +240,10 @@ export class Boss extends Entity{
     }
 
     atk(){
-        this.beam()
         let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
         switch(atkSel){
             case 0:
-                console.log("attack 0")
+                this.laser()
                 break
             case 1:
                 console.log("attack 1")
@@ -255,16 +254,14 @@ export class Boss extends Entity{
         }
     }
 
-    beam(){
-        function removeBeam(){
-            canvas.stage.removeChild(this.bossbeam)
-            this.bossbeam.position.y = 10000
-        }  
-        let bossbeam = PIXI.Sprite.from("./assets/bossbeam.png")
-        bossbeam.position.x = this.pixiData.position.x - 75
-        bossbeam.position.y = this.pixiData.position.y
-        canvas.stage.addChild(bossbeam)
-        setTimeout(removeBeam, 3000)
+    laser(){
+        const laser = new Laser(this)
+        function removeLaser(){
+            canvas.stage.removeChild(laser.pixiData)
+            gameObjectManager.splice(gameObjectManager.indexOf(laser),1)
+        } 
+        gameObjectManager.push(laser)
+        setTimeout(removeLaser, 3000)
     }
 
     floatDirection(){
@@ -286,3 +283,20 @@ export class Boss extends Entity{
     }
 }
 
+export class Laser extends GameObject{
+    constructor(boss:Boss){
+        super(PIXI.Sprite.from("./assets/bossbeam.png"), null)
+        this.pixiData.anchor.set(1)
+        this.pixiData.position.x = boss.pixiData.position.x - 75
+        this.pixiData.position.y = boss.pixiData.position.y
+        canvas.stage.addChild(this.pixiData)
+    }
+
+    update(){
+        console.log("updating")
+       if((avatar.pixiData.position.y < this.pixiData.position.y + 25) && ((avatar.pixiData.position.y > this.pixiData.position.y -25))){
+            console.log("im hit")
+            avatar.health = 0
+       }
+    }
+}
