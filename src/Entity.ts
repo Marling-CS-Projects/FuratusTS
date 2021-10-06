@@ -1,6 +1,6 @@
 import { GameObject } from './GameObject'
 import { avatar, canvas, deadmsg, gameObjectManager } from './index'
-import { Body } from 'matter-js';
+import Matter, { Body } from 'matter-js';
 import { fire } from './Bullet'
 import * as PIXI from 'pixi.js'
 import { Bodies } from "matter-js"
@@ -149,13 +149,13 @@ export class Enemy extends Entity {
 
     nearEdge() {
         let xpos;
-        if (this.direction == "left"){
-            xpos = this.matterData.position.x -3
-        } else if (this.direction == "right"){
-            xpos = this.matterData.position.x +3
+        if (this.direction == "left") {
+            xpos = this.matterData.position.x - 3
+        } else if (this.direction == "right") {
+            xpos = this.matterData.position.x + 3
         }
         let c: number = this.pythag(this.platform.matterData.position.x, xpos, this.platform.matterData.position.y, this.matterData.position.y)
-        if (c > 18){
+        if (c > 18) {
             return true
         } else {
             return false
@@ -167,7 +167,7 @@ export class Enemy extends Entity {
             if (this.direction == "right") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: 2, y: this.matterData.velocity.y })
-                } 
+                }
             } else if (this.direction == "left") {
                 if (this.nearEdge() == false) { // prevents movement too close to edge
                     Body.setVelocity(this.matterData, { x: -2, y: this.matterData.velocity.y })
@@ -201,52 +201,58 @@ export class ProjectileEnemy extends Enemy {
 
     emit() {
         if (this.inFiringProx == true) {
-                if (this.direction == "left") {
-                    fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
-                }
-                if (this.direction == "right") {
-                    fire(true, false, this.matterData.position.x, this.matterData.position.y)
-                }
+            if (this.direction == "left") {
+                fire(false, false, this.matterData.position.x, this.matterData.position.y)//left goes right and right goes left. fix this.
+            }
+            if (this.direction == "right") {
+                fire(true, false, this.matterData.position.x, this.matterData.position.y)
+            }
         }
     }
 }
 
 type floatDirection = "up" | "down"
-export class Boss extends Entity{
+export class Boss extends Entity {
     floatDir: floatDirection;
-    constructor(){
-        super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(860, 200, 150, 150, {inertia:Infinity}), 100, false, 860, 200)
-        this.floatDir= "up"
+    constructor() {
+        super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(860, 200, 150, 150, { inertia: Infinity }), 100, false, 860, 200)
+        this.floatDir = "up"
 
         this.atk = this.atk.bind(this)
+        this.shoot = this.shoot.bind(this)
     }
-    
-    update(delta:number){
+
+    update(delta: number) {
         super.update(delta)
         this.floatDirection()
         this.float()
 
-        if (this.matterData.position.x != 860){
-            Body.setPosition(this.matterData, {x:860, y:this.matterData.position.y})
+        if (this.matterData.position.x !== 860){
+            Body.setPosition(this.matterData, {x:860, y: this.matterData.position.y})
         }
+
     }
-    
-    reset(){
+
+    reset() {
         this.health = 100
         this.dead = false
         this.floatDir = "up"
         Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
-        
+
     }
 
-    atk(){
+    atk() {
         let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
-        switch(atkSel){
+        switch (atkSel) {
             case 0:
                 this.laser()
                 break
             case 1:
-                console.log("attack 1")
+                setTimeout(this.shoot, 500)
+                setTimeout(this.shoot, 1000)
+                setTimeout(this.shoot, 1500)
+                setTimeout(this.shoot, 2000)
+                this.shoot()
                 break
             case 2:
                 console.log("attack 2")
@@ -254,37 +260,59 @@ export class Boss extends Entity{
         }
     }
 
-    laser(){
+    laser() {
         const laser = new Laser(this)
-        function removeLaser(){
+        function removeLaser() {
             canvas.stage.removeChild(laser.pixiData)
-            gameObjectManager.splice(gameObjectManager.indexOf(laser),1)
-        } 
+            gameObjectManager.splice(gameObjectManager.indexOf(laser), 1)
+        }
         gameObjectManager.push(laser)
         setTimeout(removeLaser, 3000)
     }
 
-    floatDirection(){
-        if(this.matterData.position.y > 500){
+    shoot() {
+        fire(false, false, this.matterData.position.x - 80, this.matterData.position.y)
+        fire(false, false, this.matterData.position.x - 80, this.matterData.position.y + 25)
+        fire(false, false, this.matterData.position.x - 80, this.matterData.position.y + 50)
+        fire(false, false, this.matterData.position.x - 80, this.matterData.position.y - 25)
+        fire(false, false, this.matterData.position.x - 80, this.matterData.position.y - 50)
+    }
+
+    calcAngle() {
+        let dx: number = Math.abs(this.matterData.position.x - avatar.matterData.position.x) //absoloute value of difference in x
+        let dy: number = Math.abs(this.matterData.position.y - avatar.matterData.position.y) //absoloute value of difference in y
+        let angle = (Math.atan2(dy, dx) * 180 / Math.PI) //atan2 returns value in radians, so this converts to degrees
+        return angle
+    }
+
+    approachAvatar() {
+        Body.setAngle(this.matterData, 360 - this.calcAngle())
+        Body.setAngularVelocity(this.matterData, 4)
+    }
+
+    floatDirection() {
+        if (this.matterData.position.y > 500) {
             this.floatDir = "up"
         }
-        if(this.matterData.position.y < 90){
+        if (this.matterData.position.y < 90) {
             this.floatDir = "down"
         }
     }
 
-    float(){
-        if (this.floatDir === "up" ){
-            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: -3})
-        } else if (this.floatDir ==="down"){
-            Body.setVelocity(this.matterData, {x: this.matterData.velocity.x, y: 3})
+    float() {
+        if (this.floatDir === "up") {
+            Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: -3 })
+        } else if (this.floatDir === "down") {
+            Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: 3 })
 
         }
     }
+
+
 }
 
-export class Laser extends GameObject{
-    constructor(boss:Boss){
+export class Laser extends GameObject {
+    constructor(boss: Boss) {
         super(PIXI.Sprite.from("./assets/bossbeam.png"), null)
         this.pixiData.anchor.set(1)
         this.pixiData.position.x = boss.pixiData.position.x - 75
@@ -292,11 +320,11 @@ export class Laser extends GameObject{
         canvas.stage.addChild(this.pixiData)
     }
 
-    update(){
+    update() {
         console.log("updating")
-       if((avatar.pixiData.position.y < this.pixiData.position.y + 25) && ((avatar.pixiData.position.y > this.pixiData.position.y -25))){
+        if ((avatar.pixiData.position.y < this.pixiData.position.y + 25) && ((avatar.pixiData.position.y > this.pixiData.position.y - 25))) {
             console.log("im hit")
             avatar.health = 0
-       }
+        }
     }
 }

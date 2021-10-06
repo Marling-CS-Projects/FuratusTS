@@ -22,7 +22,6 @@ deadmsg.y = 1395
 export let selectedLevel: Level;//for switching between levels
 let gameStarted: boolean;
 
-
 //draws a new stage
 export let canvas = new PIXI.Application(
     {
@@ -162,7 +161,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
             }
             if (selectedLevel.levelIndex == 3) {
                 if (collidingWith == boss.matterData){
-                    avatar.health = 1
+                    avatar.health -= 4
                 }
             }
             //for powerup collisions
