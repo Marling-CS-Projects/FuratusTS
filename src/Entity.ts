@@ -214,12 +214,15 @@ export class ProjectileEnemy extends Enemy {
 type floatDirection = "up" | "down"
 export class Boss extends Entity {
     floatDir: floatDirection;
+    floating: boolean;
     constructor() {
         super(PIXI.Sprite.from("assets/boss.png"), Bodies.rectangle(860, 200, 150, 150, { inertia: Infinity }), 100, false, 860, 200)
         this.floatDir = "up"
+        this.floating = true
 
         this.atk = this.atk.bind(this)
         this.shoot = this.shoot.bind(this)
+        this.undoSlam = this.undoSlam.bind(this)
     }
 
     update(delta: number) {
@@ -227,8 +230,13 @@ export class Boss extends Entity {
         this.floatDirection()
         this.float()
 
-        if (this.matterData.position.x !== 860){
-            Body.setPosition(this.matterData, {x:860, y: this.matterData.position.y})
+
+        if (this.floating == true) {
+            Body.setPosition(this.matterData, ({ x: 860, y: this.matterData.position.y }))
+        }
+        if (this.health == 0) {
+            this.dead = true
+            Body.setPosition(this.matterData, { x: 0, y: 8000 })
         }
 
     }
@@ -236,23 +244,23 @@ export class Boss extends Entity {
     reset() {
         this.health = 100
         this.dead = false
-        this.floatDir = "up"
-        Body.setPosition(this.matterData, { x: this.spawnX, y: this.spawnY }) //returns avatar to original position
+        this.undoSlam()
 
     }
 
     atk() {
+        this.slam()
         let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
         switch (atkSel) {
             case 0:
-                this.laser()
+                //this.laser()
                 break
             case 1:
-                setTimeout(this.shoot, 500)
+                /*setTimeout(this.shoot, 500)
                 setTimeout(this.shoot, 1000)
                 setTimeout(this.shoot, 1500)
                 setTimeout(this.shoot, 2000)
-                this.shoot()
+                this.shoot()*/
                 break
             case 2:
                 console.log("attack 2")
@@ -281,13 +289,23 @@ export class Boss extends Entity {
     calcAngle() {
         let dx: number = Math.abs(this.matterData.position.x - avatar.matterData.position.x) //absoloute value of difference in x
         let dy: number = Math.abs(this.matterData.position.y - avatar.matterData.position.y) //absoloute value of difference in y
-        let angle = (Math.atan2(dy, dx) * 180 / Math.PI) //atan2 returns value in radians, so this converts to degrees
+        let angle = (Math.atan2(dy, dx)) //atan2 returns value in radians, so this converts to degrees
+        console.log(angle)
         return angle
     }
 
-    approachAvatar() {
-        Body.setAngle(this.matterData, 360 - this.calcAngle())
-        Body.setAngularVelocity(this.matterData, 4)
+    slam() {
+        this.floating = false;
+        Body.setAngle(this.matterData, 2 * (Math.PI) - this.calcAngle())
+        Body.setVelocity(this.matterData, { x: -10, y: this.matterData.velocity.y })
+        setTimeout(this.undoSlam, 2000)
+    }
+
+    undoSlam(){
+        Body.setAngle(this.matterData, 0)
+        this.floating = true;
+        Body.setPosition(this.matterData, {x:this.spawnX, y:this.spawnY})
+        this.floatDir = "up"
     }
 
     floatDirection() {
@@ -300,11 +318,13 @@ export class Boss extends Entity {
     }
 
     float() {
-        if (this.floatDir === "up") {
-            Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: -3 })
-        } else if (this.floatDir === "down") {
-            Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: 3 })
+        if (this.floating == true) {
+            if (this.floatDir === "up") {
+                Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: -3 })
+            } else if (this.floatDir === "down") {
+                Body.setVelocity(this.matterData, { x: this.matterData.velocity.x, y: 3 })
 
+            }
         }
     }
 

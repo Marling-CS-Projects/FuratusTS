@@ -198,6 +198,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
     }
 })
 
+
 //collision end detection for avatar
 Matter.Events.on(engine, "collisionEnd", function (event) {
     event.pairs
