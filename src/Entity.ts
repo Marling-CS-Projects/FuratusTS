@@ -229,8 +229,6 @@ export class Boss extends Entity {
         super.update(delta)
         this.floatDirection()
         this.float()
-
-
         if (this.floating == true) {
             Body.setPosition(this.matterData, ({ x: 860, y: this.matterData.position.y }))
         }
@@ -238,7 +236,6 @@ export class Boss extends Entity {
             this.dead = true
             Body.setPosition(this.matterData, { x: 0, y: 8000 })
         }
-
     }
 
     reset() {
@@ -249,21 +246,20 @@ export class Boss extends Entity {
     }
 
     atk() {
-        this.slam()
         let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
         switch (atkSel) {
             case 0:
-                //this.laser()
+                this.laser()
                 break
             case 1:
-                /*setTimeout(this.shoot, 500)
+                setTimeout(this.shoot, 500)
                 setTimeout(this.shoot, 1000)
                 setTimeout(this.shoot, 1500)
                 setTimeout(this.shoot, 2000)
-                this.shoot()*/
+                this.shoot()
                 break
             case 2:
-                console.log("attack 2")
+                this.slam()
                 break
         }
     }
@@ -290,7 +286,6 @@ export class Boss extends Entity {
         let dx: number = Math.abs(this.matterData.position.x - avatar.matterData.position.x) //absoloute value of difference in x
         let dy: number = Math.abs(this.matterData.position.y - avatar.matterData.position.y) //absoloute value of difference in y
         let angle = (Math.atan2(dy, dx)) //atan2 returns value in radians, so this converts to degrees
-        console.log(angle)
         return angle
     }
 

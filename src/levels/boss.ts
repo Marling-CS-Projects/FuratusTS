@@ -32,8 +32,14 @@ prEnemies.push()
 
 
 //powerups created for level 1
+let dmgbuff = new Powerup(PIXI.Sprite.from("assets/dmgbuff.png"), Bodies.rectangle(60, 385, 38, 50, {isStatic:true}), "dmgbuff",60,385,)
+let shield = new Powerup(PIXI.Sprite.from("assets/38shield.png"), Bodies.rectangle(60, 260, 38, 50, {isStatic:true}), "shield",60,260,)
+let invincibility = new Powerup(PIXI.Sprite.from("assets/38invincible.png"), Bodies.rectangle(60, 135, 38, 50, {isStatic:true}), "invincible",60,135,)
+
+
+
 const powerups:Powerup[] = []
-powerups.push()
+powerups.push(dmgbuff, shield, invincibility)
 
 const bossEnd = new LevelEnd(Bodies.rectangle(1500, 200, 30, 30, {isStatic:true}), null)
 
