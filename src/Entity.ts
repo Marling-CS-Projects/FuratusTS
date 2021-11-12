@@ -247,11 +247,14 @@ export class Boss extends Entity {
 
     atk() {
         let atkSel = Math.round(Math.random() * 2); //returns a random integer between 0 and 2
+        console.log(atkSel, "should be the selected attack")
         switch (atkSel) {
             case 0:
+                console.log("attack 0 was the selected attack")
                 this.laser()
                 break
             case 1:
+                console.log("attack 1 was the selected attack")
                 setTimeout(this.shoot, 500)
                 setTimeout(this.shoot, 1000)
                 setTimeout(this.shoot, 1500)
@@ -259,6 +262,7 @@ export class Boss extends Entity {
                 this.shoot()
                 break
             case 2:
+                console.log("attack 2 was the selected attack")
                 this.slam()
                 break
         }
@@ -336,9 +340,7 @@ export class Laser extends GameObject {
     }
 
     update() {
-        console.log("updating")
         if ((avatar.pixiData.position.y < this.pixiData.position.y + 25) && ((avatar.pixiData.position.y > this.pixiData.position.y - 25))) {
-            console.log("im hit")
             avatar.health = 0
         }
     }

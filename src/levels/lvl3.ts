@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { Bodies } from 'matter-js';
-import { Platform, Wall} from '../Walls'
+import { Platform} from '../Walls'
 import { Spike, Cannon, } from '../Obstacle'
 import {Enemy, ProjectileEnemy} from '../Entity'
 import { Powerup} from '../Powerups'
